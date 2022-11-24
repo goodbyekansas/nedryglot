@@ -1,0 +1,15 @@
+name: 🌱 Setup nix
+description: Setup nixconfig
+runs:
+  using: "composite"
+  steps:
+    - name: Install Nix
+      uses: cachix/install-nix-action@v18
+      with:
+        install_url: https://releases.nixos.org/nix/nix-2.11.1/install
+
+    - name: Create Nix configuration
+      run: |
+        mkdir -p ~/.config/nix
+        cp .github/actions/setup/nix.conf ~/.config/nix/nix.conf
+      shell: bash

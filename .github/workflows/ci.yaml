@@ -1,0 +1,59 @@
+name: Checks
+
+on: [push]
+
+concurrency:
+  group: '${{ github.ref_name }}-checks'
+  cancel-in-progress: true
+
+jobs:
+  format:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Nix
+      uses: ./.github/actions/setup
+
+    - name: Format Nedryglot 👓 🦕💨
+      run: nix build .#checks && result/bin/nixfmt
+
+  shell-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Nix
+      uses: ./.github/actions/setup
+
+    - name: Check the shell scripts 🐢 🐌 💶
+      run: nix build .#checks && result/bin/shellcheck
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Nix
+      uses: ./.github/actions/setup
+
+    - name: Lint .nix files 🦕 📝 👀
+      run: nix build .#checks && result/bin/nix-lint
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Nix
+      uses: ./.github/actions/setup
+
+    - name: Run all tests
+      run: nix flake check -L --max-jobs auto --keep-going --extra-experimental-features flakes
