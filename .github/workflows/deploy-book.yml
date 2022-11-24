@@ -1,0 +1,46 @@
+name: 📖 Deploy to Github Pages
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup Nix
+      uses: goodbyekansas/nedryland/.github/actions/setup-nix@8.0.0
+      with:
+        config-path: .github/workflows/nix-local.conf
+
+    - name: Build the book
+      run: |
+        nix build .#docs
+        cp --recursive --dereference --no-preserve=mode,ownership result/share/doc/nedryglot/manual dist
+
+    - name: Upload Artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: ./dist/
+
+  deploy:
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@main

@@ -1,0 +1,30 @@
+name: Checks
+
+on: [push]
+concurrency:
+  group: '${{ github.ref_name }}-checks'
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    uses: goodbyekansas/nedryland/.github/workflows/checks.yml@8.0.0
+    with:
+      nix-version: 2.11.1
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Nix
+      uses: goodbyekansas/nedryland/.github/actions/setup-nix@8.0.0
+      with:
+        version: 2.11.1
+        config-path: .github/workflows/nix.conf
+
+    - name: Check
+      run: nix flake check
