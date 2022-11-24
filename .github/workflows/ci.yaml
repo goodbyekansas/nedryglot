@@ -1,0 +1,32 @@
+name: Checks
+
+on: [push]
+concurrency:
+  group: '${{ github.ref_name }}-checks'
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    uses: goodbyekansas/nedryland/.github/workflows/checks.yml@move-to-nedryglot
+    with:
+      nix-version: 2.11.1
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Nix
+      uses: goodbyekansas/nedryland/.github/actions/setup-nix@move-to-nedryglot
+      with:
+        version: 2.11.1
+        access-key: ${{ secrets.NEDRYGLOT_ACCESS_KEY }}
+        builders: root@nix-builders.goodbyekansas.com
+        config-path: .github/workflows/nix.conf
+
+    - name: Check
+      run: nix flake check
