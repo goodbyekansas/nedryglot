@@ -36,16 +36,16 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1673272639,
-        "narHash": "sha256-XtKB0LzKvmivvCiJSK4NeT2HQ7hc0EWfY2o79yQoQU4=",
+        "lastModified": 1673428251,
+        "narHash": "sha256-vvjXGza8d8AT0iL0EmfwYqYK1nROS8hRM8xxkdJ5J4U=",
         "owner": "goodbyekansas",
         "repo": "nedryland",
-        "rev": "283cb95c45cf12282d714a1118f8be4ff4eb803e",
+        "rev": "58ef7a5f4edf7ede697bb2624613cffadb22bc53",
         "type": "github"
       },
       "original": {
         "owner": "goodbyekansas",
-        "ref": "move-to-nedryglot",
+        "ref": "8.0.0",
         "repo": "nedryland",
         "type": "github"
       }
