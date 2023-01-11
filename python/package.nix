@@ -15,8 +15,8 @@ let
   resolveInputs = typeName: inputs:
     builtins.filter
       (input:
-        if input ? pythonVersion && input.pythonVersion != pythonVersion then
-          abort "The python package \"${name}\" uses python version ${pythonVersion.version}, the dependency \"${input.name}\" uses incompatible python version ${input.pythonVersion.version}."
+        if input ? pythonVersion && input.pythonVersion ? pythonVersion && input.pythonVersion.pythonVersion != pythonVersion.pythonVersion then
+          abort "The python package \"${name}\" uses python version ${pythonVersion.pythonVersion}, the dependency \"${input.name}\" uses incompatible python version ${input.pythonVersion.pythonVersion}."
         else true
       )
       (base.resolveInputs name typeName [ pythonVersionName ] (
