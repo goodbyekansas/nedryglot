@@ -1,7 +1,10 @@
 {
   description = "Polyglot extension for Nedryland.";
 
-  inputs.nedryland.url = github:goodbyekansas/nedryland/8.0.0;
+  inputs.nedryland = {
+    url = github:goodbyekansas/nedryland/8.1.0;
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
   inputs.flake-utils.url = github:numtide/flake-utils;
   inputs.nixpkgs.url = "nixpkgs/nixos-22.05";
 
