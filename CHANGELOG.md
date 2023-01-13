@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2023-01-13
+
 ### Fixed
 - Python version check to use the correct attribute and check for non-Nedryland components.
 
