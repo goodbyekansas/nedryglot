@@ -146,6 +146,8 @@ in
           (mypyWithConfig src mypy)
           (pylintWithConfig src pylint)
           (pytestWithConfig src pytest)
+          # pytest is also useful as a module in PYTHONPATH for fixtures and such
+          pytest
         ];
       } ./check.bash;
 }

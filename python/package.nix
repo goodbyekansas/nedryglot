@@ -81,12 +81,7 @@ let
       inherit pythonPackageArgs;
     } // attrs.passthru or { };
 
-    originalDoCheck = attrs.doCheck or null;
-
     dontUseSetuptoolsCheck = true;
-
-    # TODO: remove when checks are on by default
-    doCheck = false;
 
     targetSetup = if (args ? targetSetup && lib.isDerivation args.targetSetup) then args.targetSetup else
     (base.mkTargetSetup {
