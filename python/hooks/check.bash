@@ -7,6 +7,9 @@ printStatus() {
 }
 
 standardTests() (
+    # clean up after pip
+    rm -rf build/
+
     set +e
     echo -e "\n\x1b[1;36mBlack:\x1b[0m"
     black --check . 2>&1 | sed 's/^/  /'
@@ -18,7 +21,7 @@ standardTests() (
 
     echo -e "\n\x1b[1;36mPylint:\x1b[0m"
     # shellcheck disable=SC2046
-    pylint $(find . -name '*.py') 2>&1 | sed 's/^/  /'
+    pylint --recursive=y . 2>&1 | sed 's/^/  /'
     pylintStatus=$?
 
     echo -e "\n\x1b[1;36mFlake8:\x1b[0m"
