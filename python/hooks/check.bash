@@ -11,9 +11,14 @@ standardTests() (
     rm -rf build/
 
     set +e
-    echo -e "\n\x1b[1;36mBlack:\x1b[0m"
-    black --check . 2>&1 | sed 's/^/  /'
-    blackStatus=$?
+    blackStatus=0
+    if command -v black >/dev/null; then
+        echo -e "\n\x1b[1;36mBlack:\x1b[0m"
+        black --check . 2>&1 | sed 's/^/  /'
+        blackStatus=$?
+    else
+        echo "Black not supported on this platform."
+    fi
 
     echo -e "\n\x1b[1;36mIsort:\x1b[0m"
     isort --check . 2>&1 | sed 's/^/  /'

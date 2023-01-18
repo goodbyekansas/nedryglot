@@ -111,8 +111,9 @@ let
 
     shellCommands = base.mkShellCommands name ({
       check = {
-        script = ''eval $installCheckPhase'';
+        script = ''eval ''${installCheckPhase:-echo "$name does not define an installCheckPhase"}'';
         description = "Run lints and tests.";
+        show = attrs.doCheck or true;
       };
       format = {
         script = "black . && isort .";

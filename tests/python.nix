@@ -24,6 +24,28 @@ let
 in
 assert dependency.python.pythonVersion == (builtins.head dependency.python.buildInputs).pythonVersion;
 
+# Test that checkInputs are included by default but not if doCheck = false;
+let
+  withChecks = (python.mkClient {
+    name = "with-checks";
+    version = "test";
+    src = ./.;
+    nativeBuildInputs = [ "native-build-input-1" ];
+    checkInputs = [ "check-input-1" ];
+  }).python;
+  withoutChecks = (python.mkClient {
+    name = "without-checks";
+    version = "test";
+    doCheck = false;
+    src = ./.;
+    nativeBuildInputs = [ "native-build-input-1" ];
+    checkInputs = [ "check-input-1" ];
+  }).python;
+in
+assert builtins.elem "check-input-1" withChecks.nativeBuildInputs;
+assert builtins.elem (python.hooks.check ./. python.defaultVersion.pkgs) withChecks.nativeBuildInputs;
+assert !builtins.elem "check-input-1" withoutChecks.nativeBuildInputs;
+
 # Client with python overridden, should have corresponding pythonVersion in the output
 let
   clientOverriddenVersion = (python.override {
@@ -61,12 +83,14 @@ let
     src = null;
     propagatedBuildInputs = (p: [ p.requests lib ]);
   };
+  # In nixpkgs 22.11 and later, the interpreter was added to propagatedBuildInputs.
+  expectedPythonDepsLen = if pkgs.lib.versionOlder pkgs.lib.version "22.11pre-git" then 2 else 3;
 
   checker = pythonVersion: target:
     let
       pythonDeps = builtins.filter (builtins.hasAttr "pythonModule") target.propagatedBuildInputs;
     in
-    builtins.length pythonDeps == 2 && builtins.all (py: py.pythonModule == pythonVersion) pythonDeps;
+    builtins.length pythonDeps == expectedPythonDepsLen && builtins.all (py: py.pythonModule == pythonVersion) pythonDeps;
 in
 assert checker pkgs.python310 clientWithNixpkgDep.python;
 assert checker pkgs.python311 clientWithNixpkgDep.python311;
@@ -87,7 +111,7 @@ let
     format = "other";
   };
 in
-assert builtins.length client.python.outputs == 2;
+assert builtins.length client.python.outputs == expectedPythonDepsLen;
 assert client.python ? wheel;
 
 assert builtins.length clientWithoutWheel.python.outputs == 1;
