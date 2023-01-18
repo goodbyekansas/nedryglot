@@ -61,7 +61,7 @@ let
     "x86_64-linux" = "x🎱🕕 🐧";
   };
 in
-builtins.trace "Running tests for ${pkgs.system} ${systemEmojis.${pkgs.system} or "🖥"}" rec {
+builtins.trace "Running tests for ${pkgs.lib.version} ${pkgs.system} ${systemEmojis.${pkgs.system} or "🖥"}" rec {
 
   tests = {
     python = import ./tests/python.nix python pkgs;

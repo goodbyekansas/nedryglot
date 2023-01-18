@@ -139,7 +139,6 @@ in
         name = "check-hook";
         deps = with pythonPkgs; [
           findutils
-          (blackWithConfig src black)
           (coverageWithConfig src coverage)
           (flake8WithConfig src flake8)
           (isortWithConfig src isort)
@@ -148,6 +147,7 @@ in
           (pytestWithConfig src pytest)
           # pytest is also useful as a module in PYTHONPATH for fixtures and such
           pytest
-        ];
+        ]
+        ++ lib.optional (with pythonPkgs.python.stdenv; !(isAarch64 && isDarwin) && lib.versionOlder lib.version "22.11pre-git") (blackWithConfig src black);
       } ./check.bash;
 }

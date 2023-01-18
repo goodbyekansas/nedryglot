@@ -6,9 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Disabled black on aarch64-darwin since it is broken in nixpkgs 22.05.
+- Hide check command if checks are not available.
+
+### Added
+- Tests for nixpkgs 22.11
+
 ## [1.0.2] - 2023-01-17
 
-## Fixed
+### Fixed
 - Python checks were accidentally left off, they are now on by default.
 
 ## [1.0.1] - 2023-01-13

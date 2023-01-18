@@ -7,8 +7,9 @@
   };
   inputs.flake-utils.url = github:numtide/flake-utils;
   inputs.nixpkgs.url = "nixpkgs/nixos-22.05";
+  inputs.nixpkgs_22_11.url = "nixpkgs/nixos-22.11";
 
-  outputs = { nedryland, flake-utils, nixpkgs, ... }:
+  outputs = { nedryland, flake-utils, nixpkgs, nixpkgs_22_11, ... }:
     flake-utils.lib.eachDefaultSystem
       (system:
         let
@@ -31,6 +32,16 @@
             name = "all-tests";
             builder = "${pkgs.bash}/bin/bash";
             args = [ "-c" ''${pkgs.coreutils}/bin/touch $out'' ];
+            tests_22_11 =
+              let
+                nedry_22_11 = nedryland.lib."${system}" {
+                  pkgs = nixpkgs_22_11.legacyPackages."${system}";
+                };
+              in
+              builtins.filter
+                (x: x != { })
+                (import ./test.nix nedry_22_11).all;
+
             tests = builtins.filter
               (x: x != { })
               (import ./test.nix nedry).all;
