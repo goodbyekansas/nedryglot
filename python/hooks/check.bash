@@ -1,9 +1,17 @@
 #! /usr/bin/env bash
 
 printStatus() {
-    status=$1
-
-    [ "$status" -eq 0 ] && echo -en "\x1b[32mpass\x1b[0m" || echo -en "\x1b[31mfail\x1b[0m"
+    case "$1" in
+        0)
+            echo -en "\x1b[32mpass\x1b[0m"
+            ;;
+        skipped)
+            echo -en "\x1b[33mskipped\x1b[0m"
+            ;;
+        *)
+            echo -en "\x1b[31mfail\x1b[0m"
+            ;;
+    esac
 }
 
 standardTests() (
@@ -11,13 +19,12 @@ standardTests() (
     rm -rf build/
 
     set +e
-    blackStatus=0
+    echo -e "\n\x1b[1;36mBlack:\x1b[0m"
     if command -v black >/dev/null; then
-        echo -e "\n\x1b[1;36mBlack:\x1b[0m"
         black --check . 2>&1 | sed 's/^/  /'
         blackStatus=$?
     else
-        echo "Black not supported on this platform."
+        echo "  Black not supported on platform ${system:-unknown}."
     fi
 
     echo -e "\n\x1b[1;36mIsort:\x1b[0m"
@@ -47,13 +54,14 @@ standardTests() (
     fi
 
     echo -e "Summary:
-  black: $(printStatus $blackStatus)
+  black: $(printStatus ${blackStatus:-skipped})
   isort: $(printStatus $isortStatus)
   pylint: $(printStatus $pylintStatus)
   flake8: $(printStatus $flake8Status)
   mypy: $(printStatus $mypyStatus)
   pytest: $(printStatus $pytestStatus)"
 
+    blackStatus=${blackStatus:-0}
     exit $((blackStatus + isortStatus + pylintStatus + flake8Status + mypyStatus + pytestStatus))
 )
 
