@@ -148,6 +148,11 @@ in
           # pytest is also useful as a module in PYTHONPATH for fixtures and such
           pytest
         ]
-        ++ lib.optional (with pythonPkgs.python.stdenv; !(isAarch64 && isDarwin) && lib.versionOlder lib.version "22.11pre-git") (blackWithConfig src black);
+        ++
+        lib.optional
+          (with pythonPkgs.python.stdenv;
+          !(isAarch64 && isDarwin)
+            && lib.versionAtLeast lib.version "22.11pre-git")
+          (blackWithConfig src black);
       } ./check.bash;
 }
