@@ -9,9 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Disabled black on aarch64-darwin since it is broken in nixpkgs 22.05.
 - Hide check command if checks are not available.
+- Terraform runs checks by default.
+- Terraform kept the pre- and postDeploy on the derivation, now they are only on the deployment.
+  This way the terraform target is not dependent on things in pre/post deploy.
+- Terraform, move terraform itself from buildInputs to nativeBuildInputs.
 
 ### Added
-- Tests for nixpkgs 22.11
+- Tests for nixpkgs 22.11.
+- Terraform uses a lintPhase and runs preList/postList.
+- Terraform can take custom checkPhase to insert after the standard checks and preCheck/postCheck.
+
 
 ## [1.0.2] - 2023-01-17
 

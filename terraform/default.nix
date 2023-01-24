@@ -5,7 +5,7 @@ let
   mkComponent =
     attrs'@{ name
     , src
-    , buildInputs ? [ ]
+    , nativeBuildInputs ? [ ]
     , enableApplyInShell ? false
     , preTerraformHook ? ""
     , postTerraformHook ? ""
@@ -16,7 +16,7 @@ let
     , ...
     }:
     let
-      attrs = (builtins.removeAttrs attrs' [ "variables" "srcExclude" "shellCommands" ]);
+      attrs = (builtins.removeAttrs attrs' [ "variables" "srcExclude" "shellCommands" "preDeployPhase" "postDeployPhase" ]);
     in
     base.mkComponent rec {
       inherit name;
@@ -24,15 +24,26 @@ let
       terraform = base.mkDerivation (attrs // {
         inherit name src;
         terraform = terraformPkg;
-        buildInputs = [ terraformPkg ] ++ buildInputs;
+        nativeBuildInputs = [ terraformPkg ] ++ nativeBuildInputs;
 
-        checkPhase = ''
-          terraform init -backend=false
+        lintPhase = ''
+          runHook preLint
           terraform fmt -recursive -check -diff
-          terraform validate
+          ${attrs.lintPhase or ""}
+          runHook postLint
         '';
 
-        installPhase = ''
+        doCheck = attrs.doCheck or true;
+
+        checkPhase = ''
+          runHook preCheck
+          terraform init -backend=false
+          terraform validate
+          ${attrs.checkPhase or ""}
+          runHook postCheck
+        '';
+
+        installPhase = attrs.installPhase or ''
           runHook preInstall
 
           mkdir -p $out/src
@@ -40,7 +51,7 @@ let
 
           runHook postInstall
         '';
-        phases = [ "unpackPhase" "installPhase" "checkPhase" ];
+        phases = [ "unpackPhase" "installPhase" "lintPhase" "checkPhase" ];
         shellCommands = {
           terraform = {
             script = ''
