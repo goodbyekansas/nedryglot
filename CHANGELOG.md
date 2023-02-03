@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disabled black on aarch64-darwin since it is broken in nixpkgs 22.05.
 - Hide check command if checks are not available.
 
+### Changed
+- The merged/generated configs for python's linters do not check the filesystem during nix eval.
+
 ### Added
 - Tests for nixpkgs 22.11
 
