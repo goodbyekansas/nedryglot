@@ -10,13 +10,9 @@ let
           "${src}/${file.path}=${file.key}"
       ) 
       (
-        builtins.filter
-          (file: if builtins.isPath file.path then true else builtins.pathExists (src + "/${file.path}"))
-          (
-            builtins.map
-              (path: if builtins.isAttrs path then path else {inherit key path;})
-              files
-          )
+        builtins.map
+          (path: if builtins.isAttrs path then path else {inherit key path;})
+          files
       )
     )}
   '';
