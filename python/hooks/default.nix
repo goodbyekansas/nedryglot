@@ -8,7 +8,7 @@ let
           "${file.path}=${file.key}"
         else
           "${src}/${file.path}=${file.key}"
-      ) 
+      )
       (
         builtins.map
           (path: if builtins.isAttrs path then path else {inherit key path;})
@@ -147,8 +147,7 @@ in
         ++
         lib.optional
           (with pythonPkgs.python.stdenv;
-          !(isAarch64 && isDarwin)
-            && lib.versionAtLeast lib.version "22.11pre-git")
+          !(isAarch64 && isDarwin && lib.versionOlder lib.version "22.11pre-git"))
           (blackWithConfig src black);
       } ./check.bash;
 }
