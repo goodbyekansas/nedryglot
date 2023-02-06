@@ -20,7 +20,7 @@ standardTests() (
 
     set +e
     echo -e "\n\x1b[1;36mBlack:\x1b[0m"
-    if command -v black >/dev/null; then
+    if command -v black >/dev/null && [[ $(which black) == /nix/store* ]]; then
         black --check . 2>&1 | sed 's/^/  /'
         blackStatus=$?
     else
