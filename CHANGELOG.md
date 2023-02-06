@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2023-02-06
+
 ### Fixed
 - Disabled black on aarch64-darwin since it is broken in nixpkgs 22.05.
 - Hide check command if checks are not available.
