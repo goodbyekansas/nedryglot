@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed black nix store check.
+
 ## [1.0.3] - 2023-02-06
 
 ### Fixed
