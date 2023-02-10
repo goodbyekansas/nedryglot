@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- docsConfig added for python components.
+
 ### Fixed
 - Fixed black nix store check.
 

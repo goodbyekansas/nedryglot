@@ -82,3 +82,26 @@ setting the config
 [docs.python]
 generator = "pdoc"
 ```
+
+#### Api docs config with docsConfig attribute
+
+Per component docs configuration can be done by settings docsConfig for the python
+component.
+
+##### autodocMockImports for sphinx
+
+To avoid errors with autodoc and missing python modules that might not be available
+when generating the documentation we can set autodocMockImports for the python component as:
+
+```nix
+base.languages.python.mkLibrary rec {
+  ...
+  docsConfig = {
+    autodocMockImports = [
+      "python_module1"
+      "python_module2"
+    ];
+  };
+  ...
+}
+```
