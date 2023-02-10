@@ -41,7 +41,7 @@ let
           name = "${name}-source";
         } else gitignoreSource args.src;
 
-  attrs = builtins.removeAttrs args [ "srcExclude" "shellInputs" "targetSetup" "docs" ];
+  attrs = builtins.removeAttrs args [ "srcExclude" "shellInputs" "targetSetup" "docs" "docsConfig" ];
 
   # Aside from propagating dependencies, buildPythonPackage also injects
   # code into and wraps executables with the paths included in this list.

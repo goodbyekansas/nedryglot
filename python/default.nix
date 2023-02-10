@@ -1,4 +1,4 @@
-{ base, callPackage, python, pythonVersions ? { } }:
+{ base, callPackage, lib, python, pythonVersions ? { } }:
 let
   pythons = pythonVersions // { inherit python; };
   defaultPythonName = "python";
@@ -44,11 +44,18 @@ let
           pythons
         );
       defaultPackage = builtins.getAttr defaultPythonName packages;
+      defaultAttrs = callPython pythons.python { };
+
     in
     componentFunc ({
-      inherit (callPython pythons.python { }) name version;
+      inherit (defaultAttrs) name version;
       _default = defaultPackage;
-      docs = (mkDocs (defaultPackage.originalDrv or defaultPackage).pythonPackageArgs) // attrs.docs or { };
+      docs = (
+        mkDocs
+          ((defaultPackage.originalDrv or defaultPackage).pythonPackageArgs
+            // lib.optionalAttrs (defaultAttrs ? docsConfig) { inherit (defaultAttrs) docsConfig; })
+      )
+      // defaultAttrs.docs or { };
     } // packages);
 in
 rec {
