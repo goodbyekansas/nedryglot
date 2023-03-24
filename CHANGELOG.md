@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed black nix store check.
+- Make sure python check tool runners has a shell shebang.
 
 ## [1.0.3] - 2023-02-06
 

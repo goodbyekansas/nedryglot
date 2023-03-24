@@ -1,4 +1,4 @@
-{ makeSetupHook, writeScriptBin, runCommandLocal, python310, bat, findutils, lib }:
+{ makeSetupHook, writeShellScriptBin, runCommandLocal, python310, bat, findutils, lib }:
 let
   mergeConfigs = src: name: key: files: runCommandLocal name { } ''
     export PYTHONPATH=''${PYTHONPATH:-}:${python310.pkgs.toml}/${python310.sitePackages}
@@ -24,7 +24,7 @@ let
     , config
     , extraArgs ? ""
     }:
-    writeScriptBin toolName ''
+    writeShellScriptBin toolName ''
       if [[ $@ =~ "--print-generated-config-path" ]]; then
         echo "${config}"
         exit 0
