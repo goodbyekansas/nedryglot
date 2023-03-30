@@ -1,4 +1,4 @@
-{ nedryland, pkgs }:
+{ nedryland, pkgs, ... }:
 let
   nedry = nedryland { inherit pkgs; };
 in
@@ -27,13 +27,14 @@ nedry.mkProject {
     windowsRust = callFile ./clients/rusty-rust/rusty-rust-windows.nix { }; # Build for windows only
     crossRust = callFile ./clients/rusty-rust/rusty-rust-cross.nix { }; # Build all platforms
 
+    cplusplus = callFile ./clients/cplusplus/cplusplus.nix { };
     infrastructure = {
       carboniferousPark = callFile ./infrastructure/park/park.nix { }; # Build terraform
     };
   };
   baseExtensions = [
-    # We add an extension for making the pythonHello more efficiently
     ../../languages.nix
+    # We add an extension for making the pythonHello more efficiently
     ./extensions/python-numpywrapped.nix
     ./extensions/rust-windows-target.nix
   ];

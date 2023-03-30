@@ -30,8 +30,12 @@ let
         else
           input
       );
-
+    components = {
+      servisen = c.mkService { name = "plate"; version = "1.2.1"; src = null; };
+    };
     inherit callFunction callFile;
+
+    mapComponentsRecursive = _f: _a: { };
   };
 
   # callFile and callFunction will auto-populate dependencies
@@ -52,7 +56,7 @@ let
             // overrides
           )
       );
-  inherit ((mockBase.callFile ./languages.nix { }).languages) python terraform rust;
+  inherit ((mockBase.callFile ./languages.nix { }).languages) python terraform rust c;
 
   systemEmojis = {
     "aarch64-linux" = "🦾 🐧";
@@ -67,6 +71,7 @@ builtins.trace "Running tests for ${pkgs.lib.version} ${pkgs.system} ${systemEmo
     python = import ./tests/python.nix python pkgs;
     terraform = import ./tests/terraform.nix terraform pkgs;
     rust = import ./tests/rust.nix rust pkgs;
+    c = import ./tests/c.nix c pkgs;
   };
 
   all = builtins.attrValues tests;

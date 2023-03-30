@@ -3,10 +3,11 @@
 
   inputs = {
     pkgs.url = github:NixOS/nixpkgs/nixos-22.11;
-    nedryland.url = github:goodbyekansas/nedryland/move-to-nedryglot;
+    nedryglot.url = path:../../;
+    nedryland.follows = "nedryglot/nedryland";
   };
 
-  outputs = { pkgs, nedryland, ... }:
+  outputs = { pkgs, nedryland, nedryglot, ... }:
     let
       # TODO: not necessarily
       system = "x86_64-linux";
@@ -14,6 +15,7 @@
       pkgs' = pkgs.legacyPackages."${system}";
       project = import ./project.nix {
         nedryland = nedryland.lib."${system}";
+        nedryglot = nedryglot.lib."${system}";
         pkgs = pkgs';
       };
     in

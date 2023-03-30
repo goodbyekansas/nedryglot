@@ -1,0 +1,12 @@
+PROJECT_NAME      = "@name@"
+PROJECT_NUMBER    = "@version@"
+OUTPUT_DIRECTORY  = "@outputDirectory@"
+JAVADOC_AUTOBRIEF = YES
+QT_AUTOBRIEF      = YES
+RECURSIVE         = YES
+GENERATE_LATEX    = NO
+GENERATE_MAN      = YES
+USE_MATHJAX       = YES
+MATHJAX_RELPATH   = "./mathjax"
+HTML_OUTPUT       = "html"
+GENERATE_HTML     = YES

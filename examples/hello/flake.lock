@@ -15,49 +15,99 @@
         "type": "github"
       }
     },
-    "nedryland": {
+    "flake-utils_2": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "nedryglot": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nedryland": "nedryland",
+        "nixpkgs": "nixpkgs",
+        "nixpkgs_22_11": "nixpkgs_22_11"
       },
       "locked": {
-        "lastModified": 1673260352,
-        "narHash": "sha256-ps96QAdyttvoO8dm7wM+6mVC6FDJxhXaLQWVhtkhRS0=",
+        "lastModified": 0,
+        "narHash": "sha256-NFEuL/D/npkPfeEAwQh8dmaBBNLKjTobUwmKDgh4M2w=",
+        "path": "../../",
+        "type": "path"
+      },
+      "original": {
+        "path": "../../",
+        "type": "path"
+      }
+    },
+    "nedryland": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nedryglot",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1675871162,
+        "narHash": "sha256-2Onmc2zq/FJIG7mB4Vm5G8+6mMEJCArEt+YWHPUXB4c=",
         "owner": "goodbyekansas",
         "repo": "nedryland",
-        "rev": "18f74a3144278c9562f0b97b15243c7bf232a10c",
+        "rev": "de46d2e7db2eb46cfaeaa9056e7553d665a7d447",
         "type": "github"
       },
       "original": {
         "owner": "goodbyekansas",
-        "ref": "move-to-nedryglot",
+        "ref": "8.3.0",
         "repo": "nedryland",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1670700605,
-        "narHash": "sha256-5dlpATkcyITpdtMflhltuD+A3RNpsVI1Mb+dtKkll6Y=",
+        "lastModified": 1672580127,
+        "narHash": "sha256-3lW3xZslREhJogoOkjeZtlBtvFMyxHku7I/9IVehhT8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "7b9eeb856cbf976482fa8d1cb295ea03fb3e1277",
+        "rev": "0874168639713f547c05947c76124f78441ea46c",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
+        "id": "nixpkgs",
         "ref": "nixos-22.05",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs_22_11": {
+      "locked": {
+        "lastModified": 1673800717,
+        "narHash": "sha256-SFHraUqLSu5cC6IxTprex/nTsI81ZQAtDvlBvGDWfnA=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
+        "rev": "2f9fd351ec37f5d479556cd48be4ca340da59b8f",
         "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-22.11",
+        "type": "indirect"
       }
     },
     "pkgs": {
       "locked": {
-        "lastModified": 1671313200,
-        "narHash": "sha256-itZTrtHeDJjV696+ur0/TzkTqb5y3Eb57WRLRPK3rwA=",
+        "lastModified": 1680122840,
+        "narHash": "sha256-zCQ/9iFHzCW5JMYkkHMwgK1/1/kTMgCMHq4THPINpAU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0938d73bb143f4ae037143572f11f4338c7b2d1c",
+        "rev": "a575c243c23e2851b78c00e9fa245232926ec32f",
         "type": "github"
       },
       "original": {
@@ -69,7 +119,11 @@
     },
     "root": {
       "inputs": {
-        "nedryland": "nedryland",
+        "nedryglot": "nedryglot",
+        "nedryland": [
+          "nedryglot",
+          "nedryland"
+        ],
         "pkgs": "pkgs"
       }
     }
