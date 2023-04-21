@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2023-04-21
+
 ### Added
 - docsConfig added for python components.
+- C/C++ as a supported language. The language currently makes no assumptions on build system.
+  See the documentation for more information.
 
 ### Fixed
 - Fixed black nix store check.
