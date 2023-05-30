@@ -21,31 +21,36 @@ standardTests() (
     set +e
     echo -e "\n\x1b[1;36mBlack:\x1b[0m"
     if [[ "$(command -v black)" == /nix/store* ]]; then
-        black --check . 2>&1 | sed 's/^/  /'
+        # shellcheck disable=SC2086
+        black ${blackArgs:-} --check .  2>&1 | sed 's/^/  /'
         blackStatus=$?
     else
         echo "  Black not supported on platform ${system:-unknown}."
     fi
 
     echo -e "\n\x1b[1;36mIsort:\x1b[0m"
-    isort --check . 2>&1 | sed 's/^/  /'
+    # shellcheck disable=SC2086
+    isort ${isortArgs:-} --check . 2>&1 | sed 's/^/  /'
     isortStatus=$?
 
     echo -e "\n\x1b[1;36mPylint:\x1b[0m"
-    # shellcheck disable=SC2046
-    pylint --recursive=y . 2>&1 | sed 's/^/  /'
+    # shellcheck disable=SC2046,SC2086
+    pylint ${pylintArgs:-} --recursive=y . 2>&1 | sed 's/^/  /'
     pylintStatus=$?
 
     echo -e "\n\x1b[1;36mFlake8:\x1b[0m"
-    flake8 . 2>&1 | sed 's/^/  /'
+    # shellcheck disable=SC2086
+    flake8 ${flake8Args:-} . 2>&1 | sed 's/^/  /'
     flake8Status=$?
 
     echo -e "\n\x1b[1;36mMypy:\x1b[0m"
-    mypy . 2>&1 | sed 's/^/  /'
+    # shellcheck disable=SC2086
+    mypy ${mypyArgs:-} . 2>&1 | sed 's/^/  /'
     mypyStatus=$?
 
     echo -e "\n\x1b[1;36mPytest:\x1b[0m"
-    pytest . 2>&1 | sed 's/^/  /'
+    # shellcheck disable=SC2086
+    pytest ${pytestArgs:-} . 2>&1 | sed 's/^/  /'
     pytestStatus=$?
 
     # no tests ran
