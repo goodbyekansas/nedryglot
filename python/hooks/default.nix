@@ -1,21 +1,29 @@
 { makeSetupHook, writeShellScriptBin, runCommandLocal, python310, bat, findutils, lib }:
 let
-  mergeConfigs = src: name: key: files: runCommandLocal name { } ''
-    export PYTHONPATH=''${PYTHONPATH:-}:${python310.pkgs.toml}/${python310.sitePackages}
-    ${python310}/bin/python ${./config-merger.py} "${key}" ${builtins.concatStringsSep " " (
-      builtins.map (file:
-        if builtins.isPath file.path then
-          "${file.path}=${file.key}"
-        else
-          "${src}/${file.path}=${file.key}"
-      )
-      (
-        builtins.map
-          (path: if builtins.isAttrs path then path else {inherit key path;})
-          files
-      )
-    )}
-  '';
+  mergeConfigs = src: name: key: files:
+    let
+      remove = builtins.foldl' (acc: cur: "${acc} ${cur}") ""
+        (builtins.map (file: "${file.key}:${file.path}=${file.removeField}")
+          (builtins.filter
+            (file: builtins.isAttrs file && file ? removeField)
+            files));
+    in
+    runCommandLocal name { } ''
+      export PYTHONPATH=''${PYTHONPATH:-}:${python310.pkgs.toml}/${python310.sitePackages}
+      ${python310}/bin/python ${./config-merger.py} --tool "${key}" ${if remove != "" then "--remove-fields ${remove}" else ""} --files ${builtins.concatStringsSep " " (
+        builtins.map (file:
+          if builtins.isPath file.path then
+            "${file.path}=${file.key}"
+          else
+            "${src}/${file.path}=${file.key}"
+        )
+        (
+          builtins.map
+            (path: if builtins.isAttrs path then path else {inherit key path;})
+            files
+        )
+      )}
+    '';
 
   generateConfigurationRunner =
     { toolDerivation
@@ -90,7 +98,8 @@ let
     config = mergeConfigs src "mypy.ini" "mypy" [
       "mypy.ini"
       ".mypy.ini"
-      { path = "pyproject.toml"; key = "tool.mypy"; }
+      { path = "pyproject.toml"; key = "tool.mypy.overrides"; }
+      { path = "pyproject.toml"; key = "tool.mypy"; removeField = "tool.mypy.overrides"; }
       "setup.cfg"
       { path = ./config/mypy.toml; key = "tool.mypy"; }
     ];
