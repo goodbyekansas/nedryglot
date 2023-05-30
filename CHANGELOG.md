@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for supplying python check tools with arguments (black,
   isort, pylint, flake8, mypy, pytest)
 
+### Fixed
+- mypy overrides not working in for example pyproject.toml.
+
 ## [1.1.0] - 2023-04-21
 
 ### Added
