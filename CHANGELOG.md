@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2023-05-31
+
 ### Added
 - Add support for supplying python check tools with arguments (black,
   isort, pylint, flake8, mypy, pytest)
