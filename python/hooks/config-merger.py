@@ -59,6 +59,8 @@ def fix_mypy_overrides(config_file, key, tool_name) -> None:
     overrides = config_file
     for v in key.split('.'):
         overrides = overrides.get(v)
+        if overrides is None:
+            return config_file
 
     root = {}
     for override in overrides:
@@ -79,7 +81,10 @@ def clean_up_fields(read_config, config_file, key, remove_fields):
             to_remove = split[-1]
             for v in indexes:
                 root = root.get(v)
-            root.pop(to_remove)
+                if root is None:
+                    break
+            else:
+                root.pop(to_remove)
 
     return read_config
 
