@@ -55,12 +55,13 @@ def parse_lists_for_toml(config_file) -> None:
             parse_lists_for_toml(value)
 
 
-def fix_mypy_overrides(config_file, key, tool_name) -> None:
+def mypy_overrides(config_file, key, tool_name) -> None:
     overrides = config_file
-    for v in key.split('.'):
+    keys = key.split('.');
+    for v in keys:
         overrides = overrides.get(v)
         if overrides is None:
-            return config_file
+            return {}
 
     root = {}
     for override in overrides:
@@ -68,7 +69,11 @@ def fix_mypy_overrides(config_file, key, tool_name) -> None:
         root.update({
             module_name: override,
         })
+    to_remove = config_file
+    for v in keys[:-1]:
+        to_remove = to_remove.get(v)
 
+    to_remove.pop(keys[-1])
     return root
 
 def clean_up_fields(read_config, config_file, key, remove_fields):
@@ -77,14 +82,14 @@ def clean_up_fields(read_config, config_file, key, remove_fields):
             root = read_config
             split = remove.split('.')
             length = len(split)
-            indexes = split[:length-1]
             to_remove = split[-1]
-            for v in indexes:
+            for v in split[:-1]:
                 root = root.get(v)
                 if root is None:
                     break
             else:
-                root.pop(to_remove)
+                if to_remove in root:
+                    root.pop(to_remove)
 
     return read_config
 
@@ -105,7 +110,6 @@ def parse_remove_fields(remove_fields_raw):
         values.extend(remove_values)
 
     return remove_fields
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -142,12 +146,12 @@ if __name__ == "__main__":
                     parse_lists_for_toml(read_config)
 
         read_config = clean_up_fields(read_config, os.path.basename(config_file), key, remove_fields)
-
+        overrides = {}
         if out_file.suffix != ".toml" and tool_name == "mypy" and key == "tool.mypy.overrides":
-            read_config = fix_mypy_overrides(read_config, key, tool_name)
-        else:
-            read_config = change_header(read_config, key, tool_name)
+            overrides = mypy_overrides(read_config, key, tool_name)
 
+        read_config = change_header(read_config, key, tool_name)
+        read_config.update(overrides)
         combined_config = merge(combined_config, read_config)
 
     with open(out_file, "w") as output_file:
