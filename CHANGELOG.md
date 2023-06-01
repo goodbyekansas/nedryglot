@@ -6,10 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.0] - 2023-05-31
+## [1.2.1] - 2023-06-1
 
 ### Fixed
 - Config merge script not considering if certain fields did not exist.
+
+## [1.2.0] - 2023-05-31
 
 ### Added
 - Add support for supplying python check tools with arguments (black,
