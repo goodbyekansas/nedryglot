@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Terraform deploy will now exit with non-zero exit code if deploy failed.
+
 ## [1.2.2] - 2023-06-9
 
 ### Fixed
