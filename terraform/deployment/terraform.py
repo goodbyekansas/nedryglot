@@ -78,7 +78,7 @@ def main() -> None:
             args.func(args)
     except subprocess.CalledProcessError as cpe:
         print(f"Failed to run terraform: {cpe}")
-        sys.exit(1)
+        sys.exit(cpe.returncode)
 
 
 if __name__ == "__main__":
