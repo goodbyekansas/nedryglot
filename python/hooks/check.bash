@@ -35,7 +35,7 @@ standardTests() (
 
     echo -e "\n\x1b[1;36mPylint:\x1b[0m"
     # shellcheck disable=SC2046,SC2086
-    pylint ${pylintArgs:-} --recursive=y . 2>&1 | sed 's/^/  /'
+    HOME=$TMP pylint ${pylintArgs:-} --recursive=y . 2>&1 | sed 's/^/  /'
     pylintStatus=$?
 
     echo -e "\n\x1b[1;36mFlake8:\x1b[0m"
