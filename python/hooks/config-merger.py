@@ -121,13 +121,19 @@ if __name__ == "__main__":
                         nargs='*',
                         help='Fields to be removed',
                         default=[])
+    parser.add_argument(
+        "-o",
+        "--out-file",
+        help="Place to write the combined config to.",
+        type=Path,
+    )
     parser.add_argument('-f', '--files', nargs='+', default=[])
     args = parser.parse_args()
     tool_name = args.tool
     remove_fields = parse_remove_fields(args.remove_fields)
 
     combined_config = {}
-    out_file = Path(os.environ["out"])
+    out_file = args.out_file
 
     for config_file, key in filter(
         lambda cfg: cfg[0].exists(),
@@ -136,7 +142,9 @@ if __name__ == "__main__":
             item.split("=")[1]), args.files,
         ),
     ):
-        print(f"Using {tool_name} settings from {config_file.absolute()}")
+        if os.environ.get("CONFIG_MERGER_DEBUG"):
+            print(f"Using {args.tool} settings from {config_file.absolute()}")
+
         match config_file.suffix:
             case ".toml":
                 read_config = parse_toml(config_file)
