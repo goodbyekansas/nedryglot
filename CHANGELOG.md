@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Terraform deploy will now exit with non-zero exit code if deploy failed.
+- Give pylint a $HOME so it won't complain when writing cache and stats.
 
 ### Changed
 - Python linting tools now combines their configs during runtime instead of build time.
