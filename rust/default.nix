@@ -4,10 +4,8 @@ let
     , callPackage
     , cargo
     , clippy
-    , coreutils
     , jq
     , lib
-    , makeSetupHook
     , j2cli
     , pkgs
     , python3
@@ -17,8 +15,10 @@ let
     , rustfmt
     , stdenv
     , symlinkJoin
+    , fetchurl
     , tonicVersion ? "0.7.2"
     , xdg-utils
+    , crates ? null
     , crossTargets ? { }
     , extraAttrs ? { }
     }:
@@ -180,15 +180,6 @@ let
         package.overrideAttrs (
           oldAttrs: {
 
-            nativeBuildInputs = oldAttrs.nativeBuildInputs
-              ++ [
-              (makeSetupHook
-                {
-                  name = "generate-cargo-checksums";
-                  deps = [ jq coreutils ];
-                } ./generateCargoChecksums.sh)
-            ];
-
             buildPhase = ''
               runHook preBuild
               cargo package --no-verify --no-metadata
@@ -198,13 +189,15 @@ let
             installPhase = ''
               runHook preInstall
               ${oldAttrs.installPhase or ""}
-              mkdir -p $out/src/rust
+              mkdir -p $out
 
               for crate in target/package/*.crate; do
-                tar -xzf $crate -C $out/src/rust
+                tar -xzf $crate -C $out
+                echo "{\"files\":{},\"package\":\"$(sha256sum $crate | grep -E -o '^(\w*)')\"}" >$out/"$(basename "''${crate//.crate/}")"/.cargo-checksum.json
               done
               runHook postInstall
             '';
+
           }
         );
 
@@ -216,9 +209,33 @@ let
       addAttributes = f: inner (args // {
         extraAttrs = (extraAttrs // (f extraAttrs));
       });
+
+      fetchCrate = { name, version, sha256, deps ? [ ] }:
+        stdenv.mkDerivation rec{
+          inherit version;
+          pname = name;
+          propagatedBuildInputs = deps;
+          dontBuild = true;
+          dontConfigure = true;
+          dontPatchShebangs = true;
+          dontShrink = true;
+          dontStrip = true;
+          src = fetchurl {
+            name = "${name}.tar.gz";
+            inherit sha256;
+            url = "https://crates.io/api/v1/crates/${name}/${version}/download";
+          };
+          installPhase = ''
+            mkdir $out
+            cp -r . $out
+            echo "{\"files\":{},\"package\":\"$(sha256sum ${src} | grep -E -o '^(\w*)')\"}" >$out/.cargo-checksum.json
+          '';
+        };
+
     in
     extraAttrs // {
-      inherit overrideAttrs mkRustToolset mkCrossTarget overrideCrossTargets toApplication toLibrary mkLibrary addAttributes toRustTarget;
+      inherit overrideAttrs mkRustToolset mkCrossTarget overrideCrossTargets toApplication toLibrary mkLibrary addAttributes toRustTarget fetchCrate;
+      crates = if crates == null then import ./default-crates.nix fetchCrate else crates;
       crossTargets = crossTargets' // {
         override = overrideCrossTargets;
       };
@@ -242,7 +259,6 @@ let
         packages: firstFunc packages ++ (secondFunc packages);
 
       defaultVersion = { inherit rustc cargo; };
-
 
       mkClient = mkComponentWith base.mkClient toApplication;
 
@@ -276,7 +292,9 @@ let
             inherit version;
             name = "${name}-rust-protobuf";
             src = generatedCode;
-            propagatedBuildInputs = builtins.map (pi: pi.rust.rust) protoInputs;
+            propagatedBuildInputs = builtins.map (pi: pi.rust.rust) protoInputs
+            ++ lib.optionals (crates != null) [ crates.prost crates.tempfile ]
+            ++ lib.optional (crates != null && includeServices) crates.tonic;
 
             # Disabling the check phase as we do not care about
             # formatting or testing generated code.

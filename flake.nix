@@ -47,7 +47,18 @@
               (import ./test.nix nedry).all;
           };
 
-          apps = nedryland.apps.${system};
+          apps = nedryland.apps.${system} // {
+            gen-crate-expression = {
+              type = "app";
+              program = "${pkgs.writeScriptBin
+                "gen-crates-expr"
+                ''
+                  PYTHONPATH="${pkgs.python3.pkgs.semver}/${pkgs.python3.sitePackages}" \
+                  ${pkgs.python3}/bin/python ${./rust/gen-crates-expr.py} "$@"
+                ''
+                }/bin/gen-crates-expr";
+            };
+          };
         }
       );
 }

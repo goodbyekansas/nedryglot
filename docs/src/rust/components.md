@@ -9,7 +9,41 @@
 - `mkComponent` is made for building extensions where you can create your own
   Nedryland component types by passing in the `nedrylandType` string.
 
-## Specifying Dependencies
+## Specifying Crate Dependencies
+
+In order to be deterministic crates are downloaded and verified ahead of building, and
+these crates need to be made available to the build environment. This is done through
+`buildInputs` and `propagatedBuildInputs`. Crates can be be defined using
+`base.languages.rust.fetchCrate {name = "some-crate-name"; version = "x.y.z"; sha256 = "sha"; deps = [crate]}`
+where sha256 is the same as you will find on
+[crates index](https://github.com/rust-lang/crates.io-index) and deps is a list of these
+kind of derivations.
+
+To ease writing of multiple such expressions there's a CLI tool
+`gen-crate-expression` both in each rust shell and as an app in Nedryglot's
+flake. Use `gen-crate-expression --help` for usage information.
+
+A set of crates has also been generated and ships with nedryglot under
+`base.languages.rust.crates`. These are roughly equivalent to the crates
+available in [Rust Playground](https://play.rust-lang.org/). This default crate
+set can be overridden by making an extension. This extension overrides the crate
+set with a set of one crate:
+```nix
+{ base }:
+{
+  languages.rust = base.languages.rust.overrideAttr {
+    crates = {
+      gimli = base.languages.rust.fetchCrate {
+        name="gimli";
+        version="0.27.3";
+        sha256="b6c80984affa11d98d1b88b66ac8853f143217b399d3c74116778ff8fdb4ed2e"; deps=[];
+      };
+    };
+  };
+}
+```
+
+## Specifying Other Dependencies
 
 Specifying dependencies in a Rust component can be done in two ways. First option is to
 assign any of the standard `mkDerivation` arguments a list with the needed inputs.

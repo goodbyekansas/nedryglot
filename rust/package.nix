@@ -5,8 +5,10 @@
 , removeReferencesTo
 , rootCallPackage
 , symlinkJoin
+, python3
 , hostTriple
 , buildTriple
+, makeSetupHook
 }:
 
 attrs@{ name
@@ -47,11 +49,6 @@ let
   nativeBuildInputs = resolveInputs name "nativeBuildInputs" [ componentTargetName "rust" ] attrs.nativeBuildInputs or [ ];
   checkInputs = resolveInputs name "checkInputs" [ componentTargetName "rust" ] attrs.checkInputs or [ ];
 
-  vendor = callPackage ./vendor.nix {
-    inherit name buildInputs propagatedBuildInputs;
-    extraCargoConfig = attrs.extraCargoConfig or "";
-  };
-
   getFeatures = features:
     if (builtins.length features) == 0 then
       ""
@@ -82,6 +79,17 @@ let
   linkerForHost = ccForHost;
 
   runner = rootCallPackage ./build-platform-runner.nix { buildPlatform = buildTriple; };
+  rustHooks = makeSetupHook
+    {
+      name = "rust-setup-hook";
+      substitutions = {
+        rustLibSrc = lib.optionalString (rustPlatform.rust.rustc ? src) rustPlatform.rustLibSrc;
+        addPrefixupHook = lib.optionalString (rustPlatform.rust.rustc ? src) ''
+          preFixupHooks+=(remove_rustlibsrc)
+        '';
+      };
+    }
+    ./rust-setuphook.sh;
 in
 base.mkDerivation
   (
@@ -128,19 +136,25 @@ base.mkDerivation
           '';
           description = "Runs cargo check, clippy and fmt.";
         };
+        gen-crate-expression = {
+          script = ''
+            addToSearchPath PYTHONPATH "${python3.pkgs.semver}/${python3.sitePackages}"
+            ${python3}/bin/python ${./gen-crates-expr.py} "$@"
+          '';
+          description = "Generate a nix expression for Nedryglot to use as crates. Use --help for usage details.";
+        };
       } // safeAttrs.shellCommands or { };
       strictDeps = true;
-      disallowedReferences = [ vendor ];
+
       srcFilter = path: type: !(type == "directory" && baseNameOf path == "target")
       && !(type == "directory" && baseNameOf path == ".cargo")
       && !(filterCargoLock && type == "regular" && baseNameOf path == "Cargo.lock")
       && !(builtins.any (pred: pred path type) srcExclude);
-      vendoredDependencies = vendor;
 
       nativeBuildInputs = [
+        rustHooks
         cacert
         removeReferencesTo
-        vendor
       ]
       ++ (builtins.attrValues rustPlatform.rust)
       ++ nativeBuildInputs;
@@ -159,16 +173,6 @@ base.mkDerivation
         # add it
         buildPackages.darwin.apple_sdk.frameworks.Security
       ];
-
-      configurePhase = attrs.configurePhase or ''
-        runHook preConfigure
-        if [ -z "$IN_NIX_SHELL" ]; then
-          sed -i '/\[patch\.nix\]/,/^[.*]$/d' Cargo.toml
-        fi
-        export CARGO_HOME=$NIX_BUILD_TOP
-        export RUSTFLAGS="$RUSTFLAGS --remap-path-prefix $NIX_BUILD_TOP=build-root"
-        runHook postConfigure
-      '';
 
       buildPhase = attrs.buildPhase or ''
         runHook preBuild
@@ -189,18 +193,6 @@ base.mkDerivation
         ${extraChecks}
         runHook postCheck
       '';
-
-      # The binary we built will be full of paths pointing to the nix store.
-      # Nix thinks it is doing us a favour by automatically adding dependencies
-      # by finding store paths in the binary. We strip these store paths so
-      # Nix won't find them.
-      preFixup = ''
-        find $out -type f -exec remove-references-to -t ${vendor} '{}' +
-      ''
-      # rustLibSrc is not required for rustPlatform
-      + (if rustPlatform.rust.rustc ? src then
-        "find $out -type f -exec remove-references-to -t ${rustPlatform.rustLibSrc} '{}' +"
-      else "");
 
       targetSetup = base.mkTargetSetup {
         name = attrs.targetSetup.name or name;

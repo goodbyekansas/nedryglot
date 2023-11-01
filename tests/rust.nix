@@ -67,10 +67,4 @@ assert libraryWasi ? rust && libraryWasi ? wasi && libraryWasi.rust != libraryWa
 # With inline, default cross target
 assert libraryRiscv ? rust;
 
-# rust component inter-dependencies
-let
-  lib = rust.mkLibrary { name = "libban"; version = "2.3.1"; src = null; };
-  client = rust.mkClient { name = "kunden"; version = "255.255.1"; src = null; buildInputs = [ lib ]; };
-in
-assert client.rust.buildInputs == client.rust.vendoredDependencies.buildInputs;
-builtins.trace ''✔️ Rust tests succeeded ${rust.emoji}'' { }
+{ }
