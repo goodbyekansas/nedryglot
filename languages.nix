@@ -1,5 +1,5 @@
 { base, callPackage, lib, python3, components }:
-assert lib.assertMsg (base ? versionAtLeast && base.versionAtLeast "8") "Nedryglot requires at least Nedryland version 8.0.0";
+assert lib.assertMsg (base ? versionAtLeast && base.versionAtLeast "9") "Nedryglot requires at least Nedryland version 9.0.0";
 {
   languages = rec{
     rust = callPackage ./rust { inherit base; };

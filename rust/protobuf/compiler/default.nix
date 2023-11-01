@@ -13,4 +13,5 @@ base.languages.rust.mkClient {
   src = ./.;
   PROTOC = "${protobuf}/bin/protoc";
   nativeBuildInputs = [ changeTonicBuildVersionHook ];
+  buildInputs = with base.languages.rust; [ crates.prost-build crates.structopt crates.tonic-build ];
 }

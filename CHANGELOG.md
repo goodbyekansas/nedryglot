@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Python linting tools now combines their configs during runtime instead of build time.
+- Rust components now only uses vendored dependencies. Dependencies
+  can be vendored with the `fetchCrate` function. Refer to the docs
+  for more information.
 
 ## [1.2.2] - 2023-06-9
 

@@ -1,6 +1,6 @@
 # Overriding the Rust Version
 
-`base.languages.rust` exposes the function `overrideRust` to change the
+`base.languages.rust` exposes the function `mkRustToolset` to change the
 build/lint tools. This function takes a number of required arguments to override
 the specific tools. The non-overriden tools are the following:
 
