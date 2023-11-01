@@ -42,11 +42,40 @@ let
         } else gitignoreSource args.src;
 
   attrs = builtins.removeAttrs args [ "srcExclude" "shellInputs" "targetSetup" "docs" "docsConfig" ];
+  hookAndChecks = [ (checkHook src pythonPkgs) ]
+    ++ (resolveInputs "checkInputs" attrs.checkInputs or [ ]);
+
 
   # Aside from propagating dependencies, buildPythonPackage also injects
   # code into and wraps executables with the paths included in this list.
   # Items listed in install_requires go here
   propagatedBuildInputs = resolveInputs "propagatedBuildInputs" attrs.propagatedBuildInputs or [ ];
+
+  targetSetup = if (args ? targetSetup && lib.isDerivation args.targetSetup) then args.targetSetup else
+  (base.mkTargetSetup {
+    name = args.targetSetup.name or args.name;
+    typeName = "python";
+    markerFiles = args.targetSetup.markerFiles or [ ] ++ [ "setup.py" "setup.cfg" "pyproject.toml" ];
+    templateDir = symlinkJoin {
+      name = "python-component-template";
+      paths = (
+        lib.optional (args ? targetSetup.templateDir) args.targetSetup.templateDir
+      ) ++ [ ./component-template ];
+    };
+    variables = (rec {
+      inherit version;
+      pname = name;
+      mainPackage = lib.toLower (builtins.replaceStrings [ "-" " " ] [ "_" "_" ] name);
+      entryPoint = if setuptoolsLibrary then "{}" else "{\\\"console_scripts\\\": [\\\"${name}=${mainPackage}.main:main\\\"]}";
+    } // args.targetSetup.variables or { });
+    variableQueries = ({
+      desc = "✍️ Write a short description for your component:";
+      author = "🤓 Enter author name:";
+      email = "📧 Enter author email:";
+      url = "🏄 Enter author website url:";
+    } // args.targetSetup.variableQueries or { });
+    initCommands = "black .";
+  });
 
   pythonPackageArgs = (attrs // {
     inherit version format preBuild doStandardTests pythonVersion propagatedBuildInputs;
@@ -60,12 +89,9 @@ let
 
     # Dependencies needed for running the checkPhase. These are added to nativeBuildInputs when doCheck = true.
     # Items listed in tests_require go here.
-    checkInputs = (
-      resolveInputs "checkInputs" attrs.checkInputs or [ ]
-    )
-    ++ [ (checkHook src pythonPkgs) ]
-    ++ (builtins.map (input: pythonPkgs."types-${input.pname or input.name}" or null) (builtins.filter lib.isDerivation propagatedBuildInputs))
-    ++ (lib.optional (format == "setuptools") pythonPkgs.types-setuptools);
+    checkInputs = hookAndChecks
+      ++ (builtins.map (input: pythonPkgs."types-${input.pname or input.name}" or null) (builtins.filter lib.isDerivation propagatedBuildInputs))
+      ++ (lib.optional (format == "setuptools") pythonPkgs.types-setuptools);
 
     # Build-time only dependencies. Typically executables as well
     # as the items listed in setup_requires
@@ -76,38 +102,13 @@ let
     buildInputs = resolveInputs "buildInputs" attrs.buildInputs or [ ];
 
     passthru = {
-      shellInputs = (resolveInputs "shellInputs" args.shellInputs or [ ])
-        ++ [ pythonPkgs.python-lsp-server pythonPkgs.pylsp-mypy pythonPkgs.pyls-isort ];
+      shellInputs = hookAndChecks
+        ++ [ pythonPkgs.python-lsp-server pythonPkgs.pylsp-mypy pythonPkgs.pyls-isort targetSetup ]
+        ++ args.shellInputs or [ ];
       inherit pythonPackageArgs;
     } // attrs.passthru or { };
 
     dontUseSetuptoolsCheck = true;
-
-    targetSetup = if (args ? targetSetup && lib.isDerivation args.targetSetup) then args.targetSetup else
-    (base.mkTargetSetup {
-      name = args.targetSetup.name or args.name;
-      typeName = "python";
-      markerFiles = args.targetSetup.markerFiles or [ ] ++ [ "setup.py" "setup.cfg" "pyproject.toml" ];
-      templateDir = symlinkJoin {
-        name = "python-component-template";
-        paths = (
-          lib.optional (args ? targetSetup.templateDir) args.targetSetup.templateDir
-        ) ++ [ ./component-template ];
-      };
-      variables = (rec {
-        inherit version;
-        pname = name;
-        mainPackage = lib.toLower (builtins.replaceStrings [ "-" " " ] [ "_" "_" ] name);
-        entryPoint = if setuptoolsLibrary then "{}" else "{\\\"console_scripts\\\": [\\\"${name}=${mainPackage}.main:main\\\"]}";
-      } // args.targetSetup.variables or { });
-      variableQueries = ({
-        desc = "✍️ Write a short description for your component:";
-        author = "🤓 Enter author name:";
-        email = "📧 Enter author email:";
-        url = "🏄 Enter author website url:";
-      } // args.targetSetup.variableQueries or { });
-      initCommands = "black .";
-    });
 
     shellCommands = base.mkShellCommands name ({
       check = {
