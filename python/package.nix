@@ -121,8 +121,11 @@ let
         description = "Format the code.";
       };
       build = {
-        script = ''eval $buildPhase'';
-        show = false;
+        description = "Build the code";
+        script = ''
+          set +u
+          phases="configurePhase ''${preBuildPhases:-} buildPhase" genericBuild
+        '';
       };
       show-generated-config = {
         script = "$1 --print-generated-config";
