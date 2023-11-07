@@ -38,16 +38,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1675871162,
-        "narHash": "sha256-2Onmc2zq/FJIG7mB4Vm5G8+6mMEJCArEt+YWHPUXB4c=",
+        "lastModified": 1699346145,
+        "narHash": "sha256-jlPDDo/tLb4GjJK4iO7iNtkJA9YUHtRgDKJDf2/IitM=",
         "owner": "goodbyekansas",
         "repo": "nedryland",
-        "rev": "de46d2e7db2eb46cfaeaa9056e7553d665a7d447",
+        "rev": "1f30728cd66257bd6911de73fbf5630ff97100b9",
         "type": "github"
       },
       "original": {
         "owner": "goodbyekansas",
-        "ref": "8.3.0",
+        "ref": "9.0.0",
         "repo": "nedryland",
         "type": "github"
       }
