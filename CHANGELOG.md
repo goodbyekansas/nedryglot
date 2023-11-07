@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2023-11-07
+
 ### Added
 - `build` shell command for python.
 
@@ -14,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Give pylint a $HOME so it won't complain when writing cache and stats.
 
 ### Changed
+- Nedryglot now requires version 9.0.0 of nedryland or higher.
 - Python linting tools now combines their configs during runtime instead of build time.
 - Rust components now only uses vendored dependencies. Dependencies
   can be vendored with the `fetchCrate` function. Refer to the docs
