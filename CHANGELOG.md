@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- C does not expect `doc` and `man` output if doxygen is disabled.
+
 ## [2.0.0] - 2023-11-07
 
 ### Added

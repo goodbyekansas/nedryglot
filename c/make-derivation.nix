@@ -87,7 +87,7 @@ let
         inherit stdenv;
         doCheck = true;
         strictDeps = true;
-        outputs = [ "out" "doc" "man" ];
+        outputs = [ "out" ] ++ lib.optionals (attrs.enableDoxygen or enableDoxygen) [ "doc" "man" ];
       } // attrs // {
         nativeBuildInputs = [
           buildPackages.clang-tools
