@@ -94,7 +94,7 @@ let
           buildPackages.valgrind
         ]
         ++ attrs.nativeBuildInputs or [ ]
-        ++ lib.optional enableDoxygen (
+        ++ lib.optional (attrs.enableDoxygen or enableDoxygen) (
           wrappedDoxygen
             (attrs.doxygenOutputDir or doxygenOutputDir)
             [
@@ -123,10 +123,8 @@ let
 
         shellCommands = {
           build = {
-            # TODO: fix undef of buildPhase when we stop using mkShell
             script = ''
               : ''${NIX_LOG_FD:=} ''${buildFlags:=}
-              ${if attrs ? buildPhase then "" else "unset buildPhase"}
               phases="''${preConfigurePhases:-} configurePhase ''${preBuildPhases:-} buildPhase"
               genericBuild
             '';
@@ -144,7 +142,6 @@ let
           check = {
             script = ''
               : ''${NIX_LOG_FD:=} ''${buildFlags:=} ''${lintPhase:=echo 'no lintPhase'}
-              ${if attrs ? buildPhase then "" else "unset buildPhase"}
               phases="''${preConfigurePhases:-} configurePhase ''${preBuildPhases:-} buildPhase checkPhase lintPhase"
               genericBuild
             '';
