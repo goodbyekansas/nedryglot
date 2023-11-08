@@ -4,11 +4,24 @@ let self =
   , pkgs
   , platforms ? { }
   , extraAttrs ? { }
+    # TODO: remove generateDocs in next major. It is renamed to enableDoxygen to be
+    # consistent with make-derivation.nix
   , generateDocs ? true
+  , enableDoxygen ? true
   , components
   , mathjax ? null
   }:
   let
+    enableDoxygen' =
+      if args ? generateDocs then
+        lib.trivial.warn
+          ''
+            generateDocs is deprecated, use enableDoxygen instead.
+            enableDoxygen can also be used on derivation-level.
+          ''
+          generateDocs
+      else
+        enableDoxygen;
     mathjaxDefaultVersion = "3.2.2";
     mathjax' =
       if mathjax == null then
@@ -66,7 +79,7 @@ let self =
         ({
           name = targets._default.name;
           version = targets._default.version;
-        } // targets // lib.optionalAttrs generateDocs {
+        } // targets // lib.optionalAttrs (targets._default.enableDoxygen or enableDoxygen') {
           docs.api = targets._default.doc;
         });
   in
