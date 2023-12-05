@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - C does not expect `doc` and `man` output if doxygen is disabled.
+- C platform override now lets the user override all attributes of the derivation, not
+  just the attributes sent in. For example, `lintPhase` was hardcoded in `mkDerivation`
+  for all C platforms.
 
 ## [2.0.0] - 2023-11-07
 
