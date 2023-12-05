@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2023-12-05
+
 ### Fixed
 - C does not expect `doc` and `man` output if doxygen is disabled.
 - C platform override now lets the user override all attributes of the derivation, not
