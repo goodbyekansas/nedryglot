@@ -1,140 +1,1016 @@
 fetchCrate: rec{
-  addr2line = fetchCrate { name = "addr2line"; version = "0.21.0"; sha256 = "8a30b2e23b9e17a9f90641c7ab1549cd9b44f296d3ccbf309d2863cfe398a0cb"; deps = [ gimli ]; };
-  adler = fetchCrate { name = "adler"; version = "1.0.2"; sha256 = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"; deps = [ ]; };
-  aho-corasick = fetchCrate { name = "aho-corasick"; version = "1.0.4"; sha256 = "6748e8def348ed4d14996fa801f4122cd763fff530258cdc03f64b25f89d3a5a"; deps = [ ]; };
-  ansi_term = fetchCrate { name = "ansi_term"; version = "0.12.1"; sha256 = "d52a9bb7ec0cf484c551830a7ce27bd20d67eac647e1befb56b0be4ee39a55d2"; deps = [ winapi ]; };
-  anstyle = fetchCrate { name = "anstyle"; version = "1.0.1"; sha256 = "3a30da5c5f2d5e72842e00bcb57657162cdabef0931f40e2deb9b4140440cecd"; deps = [ ]; };
-  anyhow = fetchCrate { name = "anyhow"; version = "1.0.75"; sha256 = "a4668cab20f66d8d020e1fbc0ebe47217433c1b6c8f2040faf858554e394ace6"; deps = [ ]; };
-  atty = fetchCrate { name = "atty"; version = "0.2.14"; sha256 = "d9b39be18770d11421cdb1b9947a45dd3f37e93092cbf377614828a319d5fee8"; deps = [ winapi hermit-abi libc ]; };
-  autocfg = fetchCrate { name = "autocfg"; version = "1.1.0"; sha256 = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"; deps = [ ]; };
-  backtrace = fetchCrate { name = "backtrace"; version = "0.3.69"; sha256 = "2089b7e3f35b9dd2d0ed921ead4f6d318c27680d4a5bd167b3ee120edb105837"; deps = [ cc libc rustc-demangle miniz_oxide cfg-if addr2line object ]; };
-  base64 = fetchCrate { name = "base64"; version = "0.21.2"; sha256 = "604178f6c5c21f02dc555784810edfb88d34ac2c73b2eae109655649ee73ce3d"; deps = [ ]; };
-  bitflags = fetchCrate { name = "bitflags"; version = "2.4.0"; sha256 = "b4682ae6287fcf752ecaabbfcc7b6f9b72aa33933dc23a554d853aea8eea8635"; deps = [ ]; };
-  block-buffer = fetchCrate { name = "block-buffer"; version = "0.11.0-pre"; sha256 = "23b6a33d658e9ef24ba0c4566d3d023d7978ca2ea3efb65e4eacd4586695892b"; deps = [ crypto-common generic-array ]; };
-  byteorder = fetchCrate { name = "byteorder"; version = "1.4.3"; sha256 = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"; deps = [ ]; };
-  bytes = fetchCrate { name = "bytes"; version = "1.4.0"; sha256 = "89b2fd2a0dcf38d7971e2194b6b6eebab45ae01067456a7fd93d5547a61b70be"; deps = [ ]; };
-  cc = fetchCrate { name = "cc"; version = "1.0.83"; sha256 = "f1174fb0b6ec23863f8b971027804a42614e347eafb0a95bf0b12cdae21fc4d0"; deps = [ libc ]; };
-  cfg-if = fetchCrate { name = "cfg-if"; version = "1.0.0"; sha256 = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"; deps = [ ]; };
-  chrono = fetchCrate { name = "chrono"; version = "0.4.20-rc.1"; sha256 = "856628f00a013eb30ae7b136b20fba37f7a39f8026d6f735dfac07c6fce1b8cf"; deps = [ num-integer num-traits ]; };
-  clap = fetchCrate { name = "clap"; version = "4.3.23"; sha256 = "03aef18ddf7d879c15ce20f04826ef8418101c7e528014c3eeea13321047dca3"; deps = [ clap_builder ]; };
-  clap_builder = fetchCrate { name = "clap_builder"; version = "4.3.23"; sha256 = "f8ce6fffb678c9b80a70b6b6de0aad31df727623a70fd9a842c30cd573e2fa98"; deps = [ clap_lex anstyle ]; };
-  clap_lex = fetchCrate { name = "clap_lex"; version = "0.5.0"; sha256 = "2da6da31387c7e4ef160ffab6d5e7f00c42626fe39aea70a7b0f1773f7dd6c1b"; deps = [ ]; };
-  cpufeatures = fetchCrate { name = "cpufeatures"; version = "0.2.9"; sha256 = "a17b76ff3a4162b0b27f354a0c87015ddad39d35f9c0c36607a3bdd175dde1f1"; deps = [ libc ]; };
-  crossbeam-channel = fetchCrate { name = "crossbeam-channel"; version = "0.5.8"; sha256 = "a33c2bf77f2df06183c3aa30d1e96c0695a313d4f9c453cc3762a6db39f99200"; deps = [ cfg-if ]; };
-  crossbeam-epoch = fetchCrate { name = "crossbeam-epoch"; version = "0.9.15"; sha256 = "ae211234986c545741a7dc064309f67ee1e5ad243d0e48335adc0484d960bcc7"; deps = [ memoffset scopeguard crossbeam-utils cfg-if autocfg ]; };
-  crossbeam-utils = fetchCrate { name = "crossbeam-utils"; version = "0.8.16"; sha256 = "5a22b2d63d4d1dc0b7f1b6b2747dd0088008a9be28b6ddf0b1e7d335e3037294"; deps = [ cfg-if ]; };
-  crypto-common = fetchCrate { name = "crypto-common"; version = "0.2.0-pre"; sha256 = "6faaa83e7700e0832cbbf84854d4c356270526907d9b14fab927fc7a9b5befb8"; deps = [ typenum generic-array ]; };
-  deranged = fetchCrate { name = "deranged"; version = "0.3.8"; sha256 = "f2696e8a945f658fd14dc3b87242e6b80cd0f36ff04ea560fa39082368847946"; deps = [ ]; };
-  digest = fetchCrate { name = "digest"; version = "0.11.0-pre"; sha256 = "1f2e47350a84ef81587a050177f84af69defbf2bee70bdfb92b500dbbd247e97"; deps = [ crypto-common ]; };
-  either = fetchCrate { name = "either"; version = "1.9.0"; sha256 = "a26ae43d7bcc3b814de94796a5e736d4029efb0ee900c12e2d54c993ad1a1e07"; deps = [ ]; };
-  env_logger = fetchCrate { name = "env_logger"; version = "0.10.0"; sha256 = "85cdab6a89accf66733ad5a1693a4dcced6aeff64602b634530dd73c1f3ee9f0"; deps = [ log ]; };
-  equivalent = fetchCrate { name = "equivalent"; version = "1.0.1"; sha256 = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"; deps = [ ]; };
-  fnv = fetchCrate { name = "fnv"; version = "1.0.7"; sha256 = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"; deps = [ ]; };
-  form_urlencoded = fetchCrate { name = "form_urlencoded"; version = "1.2.0"; sha256 = "a62bc1cf6f830c2ec14a513a9fb124d0a213a629668a4186f329db21fe045652"; deps = [ percent-encoding ]; };
-  futures = fetchCrate { name = "futures"; version = "0.3.28"; sha256 = "23342abe12aba583913b2e62f22225ff9c950774065e4bfb61a19cd9770fec40"; deps = [ futures-sink futures-core futures-task futures-channel futures-util futures-io ]; };
-  futures-channel = fetchCrate { name = "futures-channel"; version = "0.3.28"; sha256 = "955518d47e09b25bbebc7a18df10b81f0c766eaf4c4f1cccef2fca5f2a4fb5f2"; deps = [ futures-core ]; };
-  futures-core = fetchCrate { name = "futures-core"; version = "0.3.28"; sha256 = "4bca583b7e26f571124fe5b7561d49cb2868d79116cfa0eefce955557c6fee8c"; deps = [ ]; };
-  futures-io = fetchCrate { name = "futures-io"; version = "0.3.28"; sha256 = "4fff74096e71ed47f8e023204cfd0aa1289cd54ae5430a9523be060cdb849964"; deps = [ ]; };
-  futures-sink = fetchCrate { name = "futures-sink"; version = "0.3.28"; sha256 = "f43be4fe21a13b9781a69afa4985b0f6ee0e1afab2c6f454a8cf30e2b2237b6e"; deps = [ ]; };
-  futures-task = fetchCrate { name = "futures-task"; version = "0.3.28"; sha256 = "76d3d132be6c0e6aa1534069c705a74a5997a356c0dc2f86a47765e5617c5b65"; deps = [ ]; };
-  futures-util = fetchCrate { name = "futures-util"; version = "0.3.28"; sha256 = "26b01e40b772d54cf6c6d721c1d1abd0647a0106a12ecaa1c186273392a69533"; deps = [ futures-core pin-project-lite futures-task pin-utils ]; };
-  generic-array = fetchCrate { name = "generic-array"; version = "1.0.0-alpha.1"; sha256 = "b52c12c7083a12e2f5090ffa80947276573c0fcd7a1c910b73b34f78ddf5626c"; deps = [ typenum version_check ]; };
-  getrandom = fetchCrate { name = "getrandom"; version = "0.2.10"; sha256 = "be4136b2a15dd319360be1c07d9933517ccf0be8f16bf62a3bee4f0d618df427"; deps = [ cfg-if wasi libc ]; };
-  gimli = fetchCrate { name = "gimli"; version = "0.28.0"; sha256 = "6fb8d784f27acf97159b40fc4db5ecd8aa23b9ad5ef69cdd136d3bc80665f0c0"; deps = [ ]; };
-  hashbrown = fetchCrate { name = "hashbrown"; version = "0.14.0"; sha256 = "2c6201b9ff9fd90a5a3bac2e56a830d0caa509576f0e503818ee82c181b3437a"; deps = [ ]; };
-  heck = fetchCrate { name = "heck"; version = "0.5.0-rc.1"; sha256 = "28eaf72f9d21ee92f580d066b93d05742a4d188e91016b8165dc7a75c0475309"; deps = [ ]; };
-  hermit-abi = fetchCrate { name = "hermit-abi"; version = "0.3.2"; sha256 = "443144c8cdadd93ebf52ddb4056d257f5b52c04d3c804e657d19eb73fc33668b"; deps = [ ]; };
-  http = fetchCrate { name = "http"; version = "0.2.9"; sha256 = "bd6effc99afb63425aff9b05836f029929e345a6148a14b7ecd5ab67af944482"; deps = [ itoa bytes fnv ]; };
-  http-body = fetchCrate { name = "http-body"; version = "1.0.0-rc1"; sha256 = "f038884e63a5a85612eeea789f5e0f54c3ada7306234502543b23d98744781f0"; deps = [ http bytes ]; };
-  httparse = fetchCrate { name = "httparse"; version = "1.8.0"; sha256 = "d897f394bad6a705d5f4104762e116a75639e470d80901eed05a860a95cb1904"; deps = [ ]; };
-  httpdate = fetchCrate { name = "httpdate"; version = "1.0.3"; sha256 = "df3b46402a9d5adb4c86a0cf463f42e19994e3ee891101b1841f30a545cb49a9"; deps = [ ]; };
-  hyper = fetchCrate { name = "hyper"; version = "1.0.0-rc.4"; sha256 = "d280a71f348bcc670fc55b02b63c53a04ac0bf2daff2980795aeaf53edae10e6"; deps = [ want httpdate itoa http-body futures-channel tokio http bytes futures-util pin-project-lite tracing httparse ]; };
-  idna = fetchCrate { name = "idna"; version = "0.4.0"; sha256 = "7d20d6b07bfbc108882d88ed8e37d39636dcc260e15e30c45e6ba089610b917c"; deps = [ unicode-normalization unicode-bidi ]; };
-  indexmap = fetchCrate { name = "indexmap"; version = "2.0.0"; sha256 = "d5477fe2230a79769d8dc68e0eabf5437907c0457a5614a9e8dddb67f65eb65d"; deps = [ equivalent hashbrown ]; };
-  itertools = fetchCrate { name = "itertools"; version = "0.11.0"; sha256 = "b1c173a5686ce8bfa551b3563d0c2170bf24ca44da99c7ca4bfdab5418c3fe57"; deps = [ either ]; };
-  itoa = fetchCrate { name = "itoa"; version = "1.0.9"; sha256 = "af150ab688ff2122fcef229be89cb50dd66af9e01a4ff320cc137eecc9bacc38"; deps = [ ]; };
-  lazy_static = fetchCrate { name = "lazy_static"; version = "1.4.0"; sha256 = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"; deps = [ ]; };
-  libc = fetchCrate { name = "libc"; version = "0.2.147"; sha256 = "b4668fb0ea861c1df094127ac5f1da3409a82116a4ba74fca2e58ef927159bb3"; deps = [ ]; };
-  lock_api = fetchCrate { name = "lock_api"; version = "0.4.10"; sha256 = "c1cc9717a20b1bb222f333e6a92fd32f7d8a18ddc5a3191a11af45dcbf4dcd16"; deps = [ scopeguard autocfg ]; };
-  log = fetchCrate { name = "log"; version = "0.4.20"; sha256 = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"; deps = [ ]; };
-  memchr = fetchCrate { name = "memchr"; version = "2.5.0"; sha256 = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"; deps = [ ]; };
-  memoffset = fetchCrate { name = "memoffset"; version = "0.9.0"; sha256 = "5a634b1c61a95585bd15607c6ab0c4e5b226e695ff2800ba0cdccddf208c406c"; deps = [ autocfg ]; };
-  minimal-lexical = fetchCrate { name = "minimal-lexical"; version = "0.2.1"; sha256 = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"; deps = [ ]; };
-  miniz_oxide = fetchCrate { name = "miniz_oxide"; version = "0.7.1"; sha256 = "e7810e0be55b428ada41041c41f32c9f1a42817901b4ccf45fa3d4b6561e74c7"; deps = [ adler ]; };
-  mio = fetchCrate { name = "mio"; version = "0.8.8"; sha256 = "927a765cd3fc26206e66b296465fa9d3e5ab003e651c1b3c060e7956d96b19d2"; deps = [ wasi libc windows-sys ]; };
-  nom = fetchCrate { name = "nom"; version = "7.1.3"; sha256 = "d273983c5a657a70a3e8f2a01329822f3b8c8172b73826411a55751e404a0a4a"; deps = [ minimal-lexical memchr ]; };
-  num_cpus = fetchCrate { name = "num_cpus"; version = "1.16.0"; sha256 = "4161fcb6d602d4d2081af7c3a45852d875a03dd337a6bfdd6e06407b61342a43"; deps = [ hermit-abi libc ]; };
-  num-integer = fetchCrate { name = "num-integer"; version = "0.1.45"; sha256 = "225d3389fb3509a24c93f5c29eb6bde2586b98d9f016636dff58d7c6f7569cd9"; deps = [ num-traits autocfg ]; };
-  num-traits = fetchCrate { name = "num-traits"; version = "0.2.16"; sha256 = "f30b0abd723be7e2ffca1272140fac1a2f084c77ec3e123c192b66af1ee9e6c2"; deps = [ autocfg ]; };
-  object = fetchCrate { name = "object"; version = "0.32.0"; sha256 = "77ac5bbd07aea88c60a577a1ce218075ffd59208b2d7ca97adf9bfc5aeb21ebe"; deps = [ memchr ]; };
-  once_cell = fetchCrate { name = "once_cell"; version = "1.18.0"; sha256 = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"; deps = [ ]; };
-  parking_lot = fetchCrate { name = "parking_lot"; version = "0.12.1"; sha256 = "3742b2c103b9f06bc9fff0a37ff4912935851bee6d36f3c02bcc755bcfec228f"; deps = [ parking_lot_core lock_api ]; };
-  parking_lot_core = fetchCrate { name = "parking_lot_core"; version = "0.9.8"; sha256 = "93f00c865fe7cabf650081affecd3871070f26767e7b2070a3ffae14c654b447"; deps = [ libc redox_syscall windows-targets cfg-if smallvec ]; };
-  percent-encoding = fetchCrate { name = "percent-encoding"; version = "2.3.0"; sha256 = "9b2a4787296e9989611394c33f193f676704af1686e70b8f8033ab5ba9a35a94"; deps = [ ]; };
-  pin-project-lite = fetchCrate { name = "pin-project-lite"; version = "0.2.12"; sha256 = "12cc1b0bf1727a77a54b6654e7b5f1af8604923edc8b81885f8ec92f9e3f0a05"; deps = [ ]; };
-  pin-utils = fetchCrate { name = "pin-utils"; version = "0.1.0"; sha256 = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"; deps = [ ]; };
-  pkg-config = fetchCrate { name = "pkg-config"; version = "0.3.27"; sha256 = "26072860ba924cbfa98ea39c8c19b4dd6a4a25423dbdf219c1eca91aa0cf6964"; deps = [ ]; };
-  ppv-lite86 = fetchCrate { name = "ppv-lite86"; version = "0.2.17"; sha256 = "5b40af805b3121feab8a3c29f04d8ad262fa8e0561883e7653e024ae4479e6de"; deps = [ ]; };
-  proc-macro2 = fetchCrate { name = "proc-macro2"; version = "1.0.66"; sha256 = "18fb31db3f9bddb2ea821cde30a9f70117e3f119938b5ee630b7403aa6e2ead9"; deps = [ unicode-ident ]; };
-  quote = fetchCrate { name = "quote"; version = "1.0.33"; sha256 = "5267fca4496028628a95160fc423a33e8b2e6af8a5302579e322e4b520293cae"; deps = [ proc-macro2 ]; };
-  rand = fetchCrate { name = "rand"; version = "0.8.5"; sha256 = "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404"; deps = [ rand_core ]; };
-  rand_chacha = fetchCrate { name = "rand_chacha"; version = "0.3.1"; sha256 = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88"; deps = [ ppv-lite86 rand_core ]; };
-  rand_core = fetchCrate { name = "rand_core"; version = "0.6.4"; sha256 = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"; deps = [ ]; };
-  redox_syscall = fetchCrate { name = "redox_syscall"; version = "0.3.5"; sha256 = "567664f262709473930a4bf9e51bf2ebf3348f2e748ccc50dea20646858f8f29"; deps = [ bitflags ]; };
-  regex = fetchCrate { name = "regex"; version = "1.9.3"; sha256 = "81bc1d4caf89fac26a70747fe603c130093b53c773888797a6329091246d651a"; deps = [ regex-syntax regex-automata ]; };
-  regex-automata = fetchCrate { name = "regex-automata"; version = "0.3.6"; sha256 = "fed1ceff11a1dddaee50c9dc8e4938bd106e9d89ae372f192311e7da498e3b69"; deps = [ ]; };
-  regex-syntax = fetchCrate { name = "regex-syntax"; version = "0.7.4"; sha256 = "e5ea92a5b6195c6ef2a0295ea818b312502c6fc94dde986c5553242e18fd4ce2"; deps = [ ]; };
-  rustc_version = fetchCrate { name = "rustc_version"; version = "0.4.0"; sha256 = "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366"; deps = [ semver ]; };
-  rustc-demangle = fetchCrate { name = "rustc-demangle"; version = "0.1.23"; sha256 = "d626bb9dae77e28219937af045c257c28bfd3f69333c512553507f5f9798cb76"; deps = [ ]; };
-  ryu = fetchCrate { name = "ryu"; version = "1.0.15"; sha256 = "1ad4cc8da4ef723ed60bced201181d83791ad433213d8c24efffda1eec85d741"; deps = [ ]; };
-  scopeguard = fetchCrate { name = "scopeguard"; version = "1.2.0"; sha256 = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"; deps = [ ]; };
-  semver = fetchCrate { name = "semver"; version = "1.0.18"; sha256 = "b0293b4b29daaf487284529cc2f5675b8e57c61f70167ba415a463651fd6a918"; deps = [ ]; };
-  serde = fetchCrate { name = "serde"; version = "1.0.172-alpha.0"; sha256 = "0c4d129c1e009c34022bfa546ef5f80a299e232db60e57fcdffed0882d736d16"; deps = [ ]; };
-  serde_derive = fetchCrate { name = "serde_derive"; version = "1.0.172-alpha.0"; sha256 = "c17860c5973d806a49e6424f50331599589ca7020efb87c9335109fa1fc69102"; deps = [ syn proc-macro2 quote ]; };
-  serde_json = fetchCrate { name = "serde_json"; version = "1.0.105"; sha256 = "693151e1ac27563d6dbcec9dee9fbd5da8539b20fa14ad3752b2e6d363ace360"; deps = [ itoa ryu serde ]; };
-  serde_spanned = fetchCrate { name = "serde_spanned"; version = "0.6.3"; sha256 = "96426c9936fd7a0124915f9185ea1d20aa9445cc9821142f0a73bc9207a2e186"; deps = [ ]; };
-  sha2 = fetchCrate { name = "sha2"; version = "0.10.7"; sha256 = "479fb9d862239e610720565ca91403019f2f00410f1864c5aa7479b950a76ed8"; deps = [ cfg-if cpufeatures digest ]; };
-  slab = fetchCrate { name = "slab"; version = "0.4.9"; sha256 = "8f92a496fb766b417c996b9c5e57daf2f7ad3b0bebe1ccfca4856390e3d3bb67"; deps = [ autocfg ]; };
-  smallvec = fetchCrate { name = "smallvec"; version = "1.11.0"; sha256 = "62bb4feee49fdd9f707ef802e22365a35de4b7b299de4763d44bfea899442ff9"; deps = [ ]; };
-  socket2 = fetchCrate { name = "socket2"; version = "0.5.3"; sha256 = "2538b18701741680e0322a2302176d3253a35388e2e62f172f64f4f16605f877"; deps = [ libc windows-sys ]; };
-  strsim = fetchCrate { name = "strsim"; version = "0.10.0"; sha256 = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"; deps = [ ]; };
-  syn = fetchCrate { name = "syn"; version = "2.0.29"; sha256 = "c324c494eba9d92503e6f1ef2e6df781e78f6a7705a0202d9801b198807d518a"; deps = [ proc-macro2 unicode-ident ]; };
-  termcolor = fetchCrate { name = "termcolor"; version = "1.2.0"; sha256 = "be55cf8942feac5c765c2c993422806843c9a9a45d4d5c407ad6dd2ea95eb9b6"; deps = [ winapi-util ]; };
-  textwrap = fetchCrate { name = "textwrap"; version = "0.16.0"; sha256 = "222a222a5bfe1bba4a77b45ec488a741b3cb8872e5e499451fd7d0129c9c7c3d"; deps = [ ]; };
-  thiserror = fetchCrate { name = "thiserror"; version = "1.0.47"; sha256 = "97a802ec30afc17eee47b2855fc72e0c4cd62be9b4efe6591edde0ec5bd68d8f"; deps = [ thiserror-impl ]; };
-  thiserror-impl = fetchCrate { name = "thiserror-impl"; version = "1.0.47"; sha256 = "6bb623b56e39ab7dcd4b1b98bb6c8f8d907ed255b18de254088016b27a8ee19b"; deps = [ syn proc-macro2 quote ]; };
-  thread_local = fetchCrate { name = "thread_local"; version = "1.1.7"; sha256 = "3fdd6f064ccff2d6567adcb3873ca630700f00b5ad3f060c25b5dcfd9a4ce152"; deps = [ cfg-if once_cell ]; };
-  time = fetchCrate { name = "time"; version = "0.3.27"; sha256 = "0bb39ee79a6d8de55f48f2293a830e040392f1c5f16e336bdd1788cd0aadce07"; deps = [ time-core deranged ]; };
-  time-core = fetchCrate { name = "time-core"; version = "0.1.1"; sha256 = "7300fbefb4dadc1af235a9cef3737cea692a9d97e1b9cbcd4ebdae6f8868e6fb"; deps = [ ]; };
-  tinyvec = fetchCrate { name = "tinyvec"; version = "1.6.0"; sha256 = "87cc5ceb3875bb20c2890005a4e226a4651264a5c75edb2421b52861a0a0cb50"; deps = [ ]; };
-  tokio = fetchCrate { name = "tokio"; version = "1.32.0"; sha256 = "17ed6077ed6cd6c74735e21f37eb16dc3935f96878b1fe961074089cc80893f9"; deps = [ pin-project-lite backtrace ]; };
-  tokio-util = fetchCrate { name = "tokio-util"; version = "0.7.8"; sha256 = "806fe8c2c87eccc8b3267cbae29ed3ab2d0bd37fca70ab622e46aaa9375ddb7d"; deps = [ futures-sink futures-core tokio pin-project-lite bytes ]; };
-  toml = fetchCrate { name = "toml"; version = "0.7.6"; sha256 = "c17e963a819c331dcacd7ab957d80bc2b9a9c1e71c804826d2f283dd65306542"; deps = [ toml_datetime serde_spanned serde ]; };
-  toml_datetime = fetchCrate { name = "toml_datetime"; version = "0.6.3"; sha256 = "7cda73e2f1397b1262d6dfdcef8aafae14d1de7748d66822d3bfeeb6d03e5e4b"; deps = [ ]; };
-  tracing = fetchCrate { name = "tracing"; version = "0.1.37"; sha256 = "8ce8c33a8d48bd45d624a6e523445fd21ec13d3653cd51f681abf67418f54eb8"; deps = [ cfg-if pin-project-lite tracing-core ]; };
-  tracing-core = fetchCrate { name = "tracing-core"; version = "0.1.31"; sha256 = "0955b8137a1df6f1a2e9a37d8a6656291ff0297c1a97c24e0d8425fe2312f79a"; deps = [ ]; };
-  try-lock = fetchCrate { name = "try-lock"; version = "0.2.4"; sha256 = "3528ecfd12c466c6f163363caf2d02a71161dd5e1cc6ae7b34207ea2d42d81ed"; deps = [ ]; };
-  typenum = fetchCrate { name = "typenum"; version = "1.16.0"; sha256 = "497961ef93d974e23eb6f433eb5fe1b7930b659f06d12dec6fc44a8f554c0bba"; deps = [ ]; };
-  unicode-bidi = fetchCrate { name = "unicode-bidi"; version = "0.3.13"; sha256 = "92888ba5573ff080736b3648696b70cafad7d250551175acbaa4e0385b3e1460"; deps = [ ]; };
-  unicode-ident = fetchCrate { name = "unicode-ident"; version = "1.0.11"; sha256 = "301abaae475aa91687eb82514b328ab47a211a533026cb25fc3e519b86adfc3c"; deps = [ ]; };
-  unicode-normalization = fetchCrate { name = "unicode-normalization"; version = "0.1.22"; sha256 = "5c5713f0fc4b5db668a2ac63cdb7bb4469d8c9fed047b1d0292cc7b0ce2ba921"; deps = [ tinyvec ]; };
-  unicode-width = fetchCrate { name = "unicode-width"; version = "0.1.10"; sha256 = "c0edd1e5b14653f783770bce4a4dabb4a5108a5370a5f5d8cfe8710c361f6c8b"; deps = [ ]; };
-  unicode-xid = fetchCrate { name = "unicode-xid"; version = "0.2.4"; sha256 = "f962df74c8c05a667b5ee8bcf162993134c104e96440b663c8daa176dc772d8c"; deps = [ ]; };
-  url = fetchCrate { name = "url"; version = "2.4.0"; sha256 = "50bff7831e19200a85b17131d085c25d7811bc4e186efdaf54bbd132994a88cb"; deps = [ form_urlencoded percent-encoding idna ]; };
-  version_check = fetchCrate { name = "version_check"; version = "0.9.4"; sha256 = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"; deps = [ ]; };
-  want = fetchCrate { name = "want"; version = "0.3.1"; sha256 = "bfa7760aed19e106de2c7c0b581b509f2f25d3dacaf737cb82ac61bc6d760b0e"; deps = [ try-lock ]; };
-  wasi = fetchCrate { name = "wasi"; version = "0.11.0+wasi-snapshot-preview1"; sha256 = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"; deps = [ ]; };
-  winapi = fetchCrate { name = "winapi"; version = "0.3.9"; sha256 = "5c839a674fcd7a98952e593242ea400abe93992746761e38641405d28b00f419"; deps = [ winapi-i686-pc-windows-gnu winapi-x86_64-pc-windows-gnu ]; };
-  winapi-i686-pc-windows-gnu = fetchCrate { name = "winapi-i686-pc-windows-gnu"; version = "0.4.0"; sha256 = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"; deps = [ ]; };
-  winapi-util = fetchCrate { name = "winapi-util"; version = "0.1.5"; sha256 = "70ec6ce85bb158151cae5e5c87f95a8e97d2c0c4b001223f33a334e3ce5de178"; deps = [ winapi ]; };
-  winapi-x86_64-pc-windows-gnu = fetchCrate { name = "winapi-x86_64-pc-windows-gnu"; version = "0.4.0"; sha256 = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"; deps = [ ]; };
-  windows_aarch64_gnullvm = fetchCrate { name = "windows_aarch64_gnullvm"; version = "0.48.5"; sha256 = "2b38e32f0abccf9987a4e3079dfb67dcd799fb61361e53e2882c3cbaf0d905d8"; deps = [ ]; };
-  windows_aarch64_msvc = fetchCrate { name = "windows_aarch64_msvc"; version = "0.48.5"; sha256 = "dc35310971f3b2dbbf3f0690a219f40e2d9afcf64f9ab7cc1be722937c26b4bc"; deps = [ ]; };
-  windows_i686_gnu = fetchCrate { name = "windows_i686_gnu"; version = "0.48.5"; sha256 = "a75915e7def60c94dcef72200b9a8e58e5091744960da64ec734a6c6e9b3743e"; deps = [ ]; };
-  windows_i686_msvc = fetchCrate { name = "windows_i686_msvc"; version = "0.48.5"; sha256 = "8f55c233f70c4b27f66c523580f78f1004e8b5a8b659e05a4eb49d4166cca406"; deps = [ ]; };
-  windows_x86_64_gnu = fetchCrate { name = "windows_x86_64_gnu"; version = "0.48.5"; sha256 = "53d40abd2583d23e4718fddf1ebec84dbff8381c07cae67ff7768bbf19c6718e"; deps = [ ]; };
-  windows_x86_64_gnullvm = fetchCrate { name = "windows_x86_64_gnullvm"; version = "0.48.5"; sha256 = "0b7b52767868a23d5bab768e390dc5f5c55825b6d30b86c844ff2dc7414044cc"; deps = [ ]; };
-  windows_x86_64_msvc = fetchCrate { name = "windows_x86_64_msvc"; version = "0.48.5"; sha256 = "ed94fce61571a4006852b7389a063ab983c02eb1bb37b47f8272ce92d06d9538"; deps = [ ]; };
-  windows-sys = fetchCrate { name = "windows-sys"; version = "0.48.0"; sha256 = "677d2418bec65e3338edb076e806bc1ec15693c5d0104683f2efe857f61056a9"; deps = [ windows-targets ]; };
-  windows-targets = fetchCrate { name = "windows-targets"; version = "0.48.5"; sha256 = "9a2fa6e2155d7247be68c096456083145c183cbbbc2764150dda45a87197940c"; deps = [ windows_x86_64_msvc windows_i686_gnu windows_x86_64_gnullvm windows_aarch64_gnullvm windows_x86_64_gnu windows_i686_msvc windows_aarch64_msvc ]; };
+  addr2line = fetchCrate {
+    name = "addr2line";
+    version = "0.21.0";
+    sha256 = "8a30b2e23b9e17a9f90641c7ab1549cd9b44f296d3ccbf309d2863cfe398a0cb";
+    deps = [ gimli ];
+  };
+
+  adler = fetchCrate {
+    name = "adler";
+    version = "1.0.2";
+    sha256 = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe";
+    deps = [ ];
+  };
+
+  ahash = fetchCrate {
+    name = "ahash";
+    version = "0.8.7";
+    sha256 = "77c3a9648d43b9cd48db467b3f87fdd6e146bcc88ab0180006cef2179fe11d01";
+    deps = [ cfg-if once_cell version_check zerocopy ];
+  };
+
+  aho-corasick = fetchCrate {
+    name = "aho-corasick";
+    version = "1.1.2";
+    sha256 = "b2969dcb958b36655471fc61f7e416fa76033bdd4bfed0678d8fee1e2d07a1f0";
+    deps = [ ];
+  };
+
+  anstyle = fetchCrate {
+    name = "anstyle";
+    version = "1.0.4";
+    sha256 = "7079075b41f533b8c61d2a4d073c4676e1f8b249ff94a393b0595db304e0dd87";
+    deps = [ ];
+  };
+
+  anyhow = fetchCrate {
+    name = "anyhow";
+    version = "1.0.79";
+    sha256 = "080e9890a082662b09c1ad45f567faeeb47f22b5fb23895fbe1e651e718e25ca";
+    deps = [ ];
+  };
+
+  atty = fetchCrate {
+    name = "atty";
+    version = "0.2.14";
+    sha256 = "d9b39be18770d11421cdb1b9947a45dd3f37e93092cbf377614828a319d5fee8";
+    deps = [ hermit-abi libc winapi ];
+  };
+
+  autocfg = fetchCrate {
+    name = "autocfg";
+    version = "1.1.0";
+    sha256 = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa";
+    deps = [ ];
+  };
+
+  backtrace = fetchCrate {
+    name = "backtrace";
+    version = "0.3.69";
+    sha256 = "2089b7e3f35b9dd2d0ed921ead4f6d318c27680d4a5bd167b3ee120edb105837";
+    deps = [ addr2line cc cfg-if libc miniz_oxide object rustc-demangle ];
+  };
+
+  base64 = fetchCrate {
+    name = "base64";
+    version = "0.21.6";
+    sha256 = "c79fed4cdb43e993fcdadc7e58a09fd0e3e649c4436fa11da71c9f1f3ee7feb9";
+    deps = [ ];
+  };
+
+  bitflags = fetchCrate {
+    name = "bitflags";
+    version = "2.4.1";
+    sha256 = "327762f6e5a765692301e5bb513e0d9fef63be86bbc14528052b1cd3e6f03e07";
+    deps = [ ];
+  };
+
+  bitflags_1 = fetchCrate {
+    name = "bitflags";
+    version = "1.3.2";
+    sha256 = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a";
+    deps = [ ];
+  };
+
+  block-buffer = fetchCrate {
+    name = "block-buffer";
+    version = "0.10.4";
+    sha256 = "3078c7629b62d3f0439517fa394996acacc5cbc91c5a20d8c658e77abd503a71";
+    deps = [ generic-array ];
+  };
+
+  byteorder = fetchCrate {
+    name = "byteorder";
+    version = "1.5.0";
+    sha256 = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b";
+    deps = [ ];
+  };
+
+  bytes = fetchCrate {
+    name = "bytes";
+    version = "1.5.0";
+    sha256 = "a2bd12c1caf447e69cd4528f47f94d203fd2582878ecb9e9465484c4148a8223";
+    deps = [ ];
+  };
+
+  cc = fetchCrate {
+    name = "cc";
+    version = "1.0.83";
+    sha256 = "f1174fb0b6ec23863f8b971027804a42614e347eafb0a95bf0b12cdae21fc4d0";
+    deps = [ libc ];
+  };
+
+  cfg-if = fetchCrate {
+    name = "cfg-if";
+    version = "1.0.0";
+    sha256 = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd";
+    deps = [ ];
+  };
+
+  chrono = fetchCrate {
+    name = "chrono";
+    version = "0.4.31";
+    sha256 = "7f2c685bad3eb3d45a01354cedb7d5faa66194d1d58ba6e267a8de788f79db38";
+    deps = [ num-traits ];
+  };
+
+  clap = fetchCrate {
+    name = "clap";
+    version = "4.4.14";
+    sha256 = "33e92c5c1a78c62968ec57dbc2440366a2d6e5a23faf829970ff1585dc6b18e2";
+    deps = [ clap_builder ];
+  };
+
+  clap_builder = fetchCrate {
+    name = "clap_builder";
+    version = "4.4.14";
+    sha256 = "f4323769dc8a61e2c39ad7dc26f6f2800524691a44d74fe3d1071a5c24db6370";
+    deps = [ anstyle clap_lex ];
+  };
+
+  clap_lex = fetchCrate {
+    name = "clap_lex";
+    version = "0.6.0";
+    sha256 = "702fc72eb24e5a1e48ce58027a675bc24edd52096d5397d4aea7c6dd9eca0bd1";
+    deps = [ ];
+  };
+
+  cpufeatures = fetchCrate {
+    name = "cpufeatures";
+    version = "0.2.12";
+    sha256 = "53fe5e26ff1b7aef8bca9c6080520cfb8d9333c7568e1829cef191a9723e5504";
+    deps = [ libc ];
+  };
+
+  crossbeam-channel = fetchCrate {
+    name = "crossbeam-channel";
+    version = "0.5.11";
+    sha256 = "176dc175b78f56c0f321911d9c8eb2b77a78a4860b9c19db83835fea1a46649b";
+    deps = [ crossbeam-utils ];
+  };
+
+  crossbeam-epoch = fetchCrate {
+    name = "crossbeam-epoch";
+    version = "0.9.18";
+    sha256 = "5b82ac4a3c2ca9c3460964f020e1402edd5753411d7737aa39c3714ad1b5420e";
+    deps = [ crossbeam-utils ];
+  };
+
+  crossbeam-utils = fetchCrate {
+    name = "crossbeam-utils";
+    version = "0.8.19";
+    sha256 = "248e3bacc7dc6baa3b21e405ee045c3047101a49145e7e9eca583ab4c2ca5345";
+    deps = [ ];
+  };
+
+  crypto-common = fetchCrate {
+    name = "crypto-common";
+    version = "0.1.6";
+    sha256 = "1bfb12502f3fc46cca1bb51ac28df9d618d813cdc3d2f25b9fe775a34af26bb3";
+    deps = [ generic-array typenum ];
+  };
+
+  deranged = fetchCrate {
+    name = "deranged";
+    version = "0.3.11";
+    sha256 = "b42b6fa04a440b495c8b04d0e71b707c585f83cb9cb28cf8cd0d976c315e31b4";
+    deps = [ ];
+  };
+
+  digest = fetchCrate {
+    name = "digest";
+    version = "0.10.7";
+    sha256 = "9ed9a281f7bc9b7576e61468ba615a66a5c8cfdff42420a70aa82701a3b1e292";
+    deps = [ crypto-common ];
+  };
+
+  either = fetchCrate {
+    name = "either";
+    version = "1.9.0";
+    sha256 = "a26ae43d7bcc3b814de94796a5e736d4029efb0ee900c12e2d54c993ad1a1e07";
+    deps = [ ];
+  };
+
+  env_logger = fetchCrate {
+    name = "env_logger";
+    version = "0.10.1";
+    sha256 = "95b3f3e67048839cb0d0781f445682a35113da7121f7c949db0e2be96a4fbece";
+    deps = [ log ];
+  };
+
+  equivalent = fetchCrate {
+    name = "equivalent";
+    version = "1.0.1";
+    sha256 = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5";
+    deps = [ ];
+  };
+
+  errno = fetchCrate {
+    name = "errno";
+    version = "0.3.8";
+    sha256 = "a258e46cdc063eb8519c00b9fc845fc47bcfca4130e2f08e88665ceda8474245";
+    deps = [ libc windows-sys ];
+  };
+
+  fastrand = fetchCrate {
+    name = "fastrand";
+    version = "2.0.1";
+    sha256 = "25cbce373ec4653f1a01a31e8a5e5ec0c622dc27ff9c4e6606eefef5cbbed4a5";
+    deps = [ ];
+  };
+
+  fnv = fetchCrate {
+    name = "fnv";
+    version = "1.0.7";
+    sha256 = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1";
+    deps = [ ];
+  };
+
+  form_urlencoded = fetchCrate {
+    name = "form_urlencoded";
+    version = "1.2.1";
+    sha256 = "e13624c2627564efccf4934284bdd98cbaa14e79b0b5a141218e507b3a823456";
+    deps = [ percent-encoding ];
+  };
+
+  futures = fetchCrate {
+    name = "futures";
+    version = "0.3.30";
+    sha256 = "645c6916888f6cb6350d2550b80fb63e734897a8498abe35cfb732b6487804b0";
+    deps = [ futures-channel futures-core futures-io futures-sink futures-task futures-util ];
+  };
+
+  futures-channel = fetchCrate {
+    name = "futures-channel";
+    version = "0.3.30";
+    sha256 = "eac8f7d7865dcb88bd4373ab671c8cf4508703796caa2b1985a9ca867b3fcb78";
+    deps = [ futures-core ];
+  };
+
+  futures-core = fetchCrate {
+    name = "futures-core";
+    version = "0.3.30";
+    sha256 = "dfc6580bb841c5a68e9ef15c77ccc837b40a7504914d52e47b8b0e9bbda25a1d";
+    deps = [ ];
+  };
+
+  futures-io = fetchCrate {
+    name = "futures-io";
+    version = "0.3.30";
+    sha256 = "a44623e20b9681a318efdd71c299b6b222ed6f231972bfe2f224ebad6311f0c1";
+    deps = [ ];
+  };
+
+  futures-sink = fetchCrate {
+    name = "futures-sink";
+    version = "0.3.30";
+    sha256 = "9fb8e00e87438d937621c1c6269e53f536c14d3fbd6a042bb24879e57d474fb5";
+    deps = [ ];
+  };
+
+  futures-task = fetchCrate {
+    name = "futures-task";
+    version = "0.3.30";
+    sha256 = "38d84fa142264698cdce1a9f9172cf383a0c82de1bddcf3092901442c4097004";
+    deps = [ ];
+  };
+
+  futures-util = fetchCrate {
+    name = "futures-util";
+    version = "0.3.30";
+    sha256 = "3d6401deb83407ab3da39eba7e33987a73c3df0c82b4bb5813ee871c19c41d48";
+    deps = [ futures-core futures-task pin-project-lite pin-utils ];
+  };
+
+  generic-array = fetchCrate {
+    name = "generic-array";
+    version = "1.0.0";
+    sha256 = "fe739944a5406424e080edccb6add95685130b9f160d5407c639c7df0c5836b0";
+    deps = [ typenum ];
+  };
+
+  getrandom = fetchCrate {
+    name = "getrandom";
+    version = "0.2.12";
+    sha256 = "190092ea657667030ac6a35e305e62fc4dd69fd98ac98631e5d3a2b1575a12b5";
+    deps = [ cfg-if libc wasi ];
+  };
+
+  gimli = fetchCrate {
+    name = "gimli";
+    version = "0.28.1";
+    sha256 = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253";
+    deps = [ ];
+  };
+
+  hashbrown = fetchCrate {
+    name = "hashbrown";
+    version = "0.14.3";
+    sha256 = "290f1a1d9242c78d09ce40a5e87e7554ee637af1351968159f4952f028f75604";
+    deps = [ ];
+  };
+
+  heck = fetchCrate {
+    name = "heck";
+    version = "0.4.1";
+    sha256 = "95505c38b4572b2d910cecb0281560f54b440a19336cbbcb27bf6ce6adc6f5a8";
+    deps = [ ];
+  };
+
+  hermit-abi = fetchCrate {
+    name = "hermit-abi";
+    version = "0.3.3";
+    sha256 = "d77f7ec81a6d05a3abb01ab6eb7590f6083d08449fe5a1c8b1e620283546ccb7";
+    deps = [ ];
+  };
+
+  http = fetchCrate {
+    name = "http";
+    version = "1.0.0";
+    sha256 = "b32afd38673a8016f7c9ae69e5af41a58f81b1d31689040f2f1959594ce194ea";
+    deps = [ bytes fnv itoa ];
+  };
+
+  http-body = fetchCrate {
+    name = "http-body";
+    version = "1.0.0";
+    sha256 = "1cac85db508abc24a2e48553ba12a996e87244a0395ce011e62b37158745d643";
+    deps = [ bytes http ];
+  };
+
+  hyper = fetchCrate {
+    name = "hyper";
+    version = "1.1.0";
+    sha256 = "fb5aa53871fc917b1a9ed87b683a5d86db645e23acb32c2e0785a353e522fb75";
+    deps = [ bytes http http-body pin-project-lite tokio ];
+  };
+
+  idna = fetchCrate {
+    name = "idna";
+    version = "0.5.0";
+    sha256 = "634d9b1461af396cad843f47fdba5597a4f9e6ddd4bfb6ff5d85028c25cb12f6";
+    deps = [ unicode-bidi unicode-normalization ];
+  };
+
+  indexmap = fetchCrate {
+    name = "indexmap";
+    version = "2.1.0";
+    sha256 = "d530e1a18b1cb4c484e6e34556a0d948706958449fca0cab753d649f2bce3d1f";
+    deps = [ equivalent hashbrown ];
+  };
+
+  itertools = fetchCrate {
+    name = "itertools";
+    version = "0.11.0";
+    sha256 = "b1c173a5686ce8bfa551b3563d0c2170bf24ca44da99c7ca4bfdab5418c3fe57";
+    deps = [ either ];
+  };
+
+  itoa = fetchCrate {
+    name = "itoa";
+    version = "1.0.10";
+    sha256 = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c";
+    deps = [ ];
+  };
+
+  lazy_static = fetchCrate {
+    name = "lazy_static";
+    version = "1.4.0";
+    sha256 = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646";
+    deps = [ ];
+  };
+
+  libc = fetchCrate {
+    name = "libc";
+    version = "0.2.152";
+    sha256 = "13e3bf6590cbc649f4d1a3eefc9d5d6eb746f5200ffb04e5e142700b8faa56e7";
+    deps = [ ];
+  };
+
+  linux-raw-sys = fetchCrate {
+    name = "linux-raw-sys";
+    version = "0.4.12";
+    sha256 = "c4cd1a83af159aa67994778be9070f0ae1bd732942279cabb14f86f986a21456";
+    deps = [ ];
+  };
+
+  lock_api = fetchCrate {
+    name = "lock_api";
+    version = "0.4.11";
+    sha256 = "3c168f8615b12bc01f9c17e2eb0cc07dcae1940121185446edc3744920e8ef45";
+    deps = [ autocfg scopeguard ];
+  };
+
+  log = fetchCrate {
+    name = "log";
+    version = "0.4.20";
+    sha256 = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f";
+    deps = [ ];
+  };
+
+  memchr = fetchCrate {
+    name = "memchr";
+    version = "2.7.1";
+    sha256 = "523dc4f511e55ab87b694dc30d0f820d60906ef06413f93d4d7a1385599cc149";
+    deps = [ ];
+  };
+
+  memoffset = fetchCrate {
+    name = "memoffset";
+    version = "0.9.0";
+    sha256 = "5a634b1c61a95585bd15607c6ab0c4e5b226e695ff2800ba0cdccddf208c406c";
+    deps = [ autocfg ];
+  };
+
+  minimal-lexical = fetchCrate {
+    name = "minimal-lexical";
+    version = "0.2.1";
+    sha256 = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a";
+    deps = [ ];
+  };
+
+  miniz_oxide = fetchCrate {
+    name = "miniz_oxide";
+    version = "0.7.1";
+    sha256 = "e7810e0be55b428ada41041c41f32c9f1a42817901b4ccf45fa3d4b6561e74c7";
+    deps = [ adler ];
+  };
+
+  mio = fetchCrate {
+    name = "mio";
+    version = "0.8.10";
+    sha256 = "8f3d0b296e374a4e6f3c7b0a1f5a51d748a0d34c85e7dc48fc3fa9a87657fe09";
+    deps = [ libc wasi windows-sys ];
+  };
+
+  nom = fetchCrate {
+    name = "nom";
+    version = "7.1.3";
+    sha256 = "d273983c5a657a70a3e8f2a01329822f3b8c8172b73826411a55751e404a0a4a";
+    deps = [ memchr minimal-lexical ];
+  };
+
+  num-integer = fetchCrate {
+    name = "num-integer";
+    version = "0.1.45";
+    sha256 = "225d3389fb3509a24c93f5c29eb6bde2586b98d9f016636dff58d7c6f7569cd9";
+    deps = [ autocfg num-traits ];
+  };
+
+  num-traits = fetchCrate {
+    name = "num-traits";
+    version = "0.2.17";
+    sha256 = "39e3200413f237f41ab11ad6d161bc7239c84dcb631773ccd7de3dfe4b5c267c";
+    deps = [ autocfg ];
+  };
+
+  num_cpus = fetchCrate {
+    name = "num_cpus";
+    version = "1.16.0";
+    sha256 = "4161fcb6d602d4d2081af7c3a45852d875a03dd337a6bfdd6e06407b61342a43";
+    deps = [ hermit-abi libc ];
+  };
+
+  object = fetchCrate {
+    name = "object";
+    version = "0.32.2";
+    sha256 = "a6a622008b6e321afc04970976f62ee297fdbaa6f95318ca343e3eebb9648441";
+    deps = [ memchr ];
+  };
+
+  once_cell = fetchCrate {
+    name = "once_cell";
+    version = "1.19.0";
+    sha256 = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92";
+    deps = [ ];
+  };
+
+  parking_lot = fetchCrate {
+    name = "parking_lot";
+    version = "0.12.1";
+    sha256 = "3742b2c103b9f06bc9fff0a37ff4912935851bee6d36f3c02bcc755bcfec228f";
+    deps = [ lock_api parking_lot_core ];
+  };
+
+  parking_lot_core = fetchCrate {
+    name = "parking_lot_core";
+    version = "0.9.9";
+    sha256 = "4c42a9226546d68acdd9c0a280d17ce19bfe27a46bf68784e4066115788d008e";
+    deps = [ cfg-if libc redox_syscall smallvec windows-targets ];
+  };
+
+  percent-encoding = fetchCrate {
+    name = "percent-encoding";
+    version = "2.3.1";
+    sha256 = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e";
+    deps = [ ];
+  };
+
+  pin-project-lite = fetchCrate {
+    name = "pin-project-lite";
+    version = "0.2.13";
+    sha256 = "8afb450f006bf6385ca15ef45d71d2288452bc3683ce2e2cacc0d18e4be60b58";
+    deps = [ ];
+  };
+
+  pin-utils = fetchCrate {
+    name = "pin-utils";
+    version = "0.1.0";
+    sha256 = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184";
+    deps = [ ];
+  };
+
+  pkg-config = fetchCrate {
+    name = "pkg-config";
+    version = "0.3.28";
+    sha256 = "69d3587f8a9e599cc7ec2c00e331f71c4e69a5f9a4b8a6efd5b07466b9736f9a";
+    deps = [ ];
+  };
+
+  powerfmt = fetchCrate {
+    name = "powerfmt";
+    version = "0.2.0";
+    sha256 = "439ee305def115ba05938db6eb1644ff94165c5ab5e9420d1c1bcedbba909391";
+    deps = [ ];
+  };
+
+  ppv-lite86 = fetchCrate {
+    name = "ppv-lite86";
+    version = "0.2.17";
+    sha256 = "5b40af805b3121feab8a3c29f04d8ad262fa8e0561883e7653e024ae4479e6de";
+    deps = [ ];
+  };
+
+  proc-macro2 = fetchCrate {
+    name = "proc-macro2";
+    version = "1.0.76";
+    sha256 = "95fc56cda0b5c3325f5fbbd7ff9fda9e02bb00bb3dac51252d2f1bfa1cb8cc8c";
+    deps = [ unicode-ident ];
+  };
+
+  prost = fetchCrate {
+    name = "prost";
+    version = "0.12.3";
+    sha256 = "146c289cda302b98a28d40c8b3b90498d6e526dd24ac2ecea73e4e491685b94a";
+    deps = [ bytes prost-derive ];
+  };
+
+  prost-derive = fetchCrate {
+    name = "prost-derive";
+    version = "0.12.3";
+    sha256 = "efb6c9a1dd1def8e2124d17e83a20af56f1570d6c2d2bd9e266ccb768df3840e";
+    deps = [ anyhow itertools proc-macro2 quote syn ];
+  };
+
+  quote = fetchCrate {
+    name = "quote";
+    version = "1.0.35";
+    sha256 = "291ec9ab5efd934aaf503a6466c5d5251535d108ee747472c3977cc5acc868ef";
+    deps = [ proc-macro2 ];
+  };
+
+  rand = fetchCrate {
+    name = "rand";
+    version = "0.8.5";
+    sha256 = "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404";
+    deps = [ rand_core ];
+  };
+
+  rand_chacha = fetchCrate {
+    name = "rand_chacha";
+    version = "0.3.1";
+    sha256 = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88";
+    deps = [ ppv-lite86 rand_core ];
+  };
+
+  rand_core = fetchCrate {
+    name = "rand_core";
+    version = "0.6.4";
+    sha256 = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c";
+    deps = [ ];
+  };
+
+  redox_syscall = fetchCrate {
+    name = "redox_syscall";
+    version = "0.4.1";
+    sha256 = "4722d768eff46b75989dd134e5c353f0d6296e5aaa3132e776cbdb56be7731aa";
+    deps = [ bitflags_1 ];
+  };
+
+  regex = fetchCrate {
+    name = "regex";
+    version = "1.10.2";
+    sha256 = "380b951a9c5e80ddfd6136919eef32310721aa4aacd4889a8d39124b026ab343";
+    deps = [ regex-automata regex-syntax ];
+  };
+
+  regex-automata = fetchCrate {
+    name = "regex-automata";
+    version = "0.4.3";
+    sha256 = "5f804c7828047e88b2d32e2d7fe5a105da8ee3264f01902f796c8e067dc2483f";
+    deps = [ ];
+  };
+
+  regex-syntax = fetchCrate {
+    name = "regex-syntax";
+    version = "0.8.2";
+    sha256 = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f";
+    deps = [ ];
+  };
+
+  rustc-demangle = fetchCrate {
+    name = "rustc-demangle";
+    version = "0.1.23";
+    sha256 = "d626bb9dae77e28219937af045c257c28bfd3f69333c512553507f5f9798cb76";
+    deps = [ ];
+  };
+
+  rustc_version = fetchCrate {
+    name = "rustc_version";
+    version = "0.4.0";
+    sha256 = "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366";
+    deps = [ semver ];
+  };
+
+  rustix = fetchCrate {
+    name = "rustix";
+    version = "0.38.28";
+    sha256 = "72e572a5e8ca657d7366229cdde4bd14c4eb5499a9573d4d366fe1b599daa316";
+    deps = [ bitflags errno libc linux-raw-sys windows-sys ];
+  };
+
+  ryu = fetchCrate {
+    name = "ryu";
+    version = "1.0.16";
+    sha256 = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c";
+    deps = [ ];
+  };
+
+  scopeguard = fetchCrate {
+    name = "scopeguard";
+    version = "1.2.0";
+    sha256 = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49";
+    deps = [ ];
+  };
+
+  semver = fetchCrate {
+    name = "semver";
+    version = "1.0.21";
+    sha256 = "b97ed7a9823b74f99c7742f5336af7be5ecd3eeafcb1507d1fa93347b1d589b0";
+    deps = [ ];
+  };
+
+  serde = fetchCrate {
+    name = "serde";
+    version = "1.0.195";
+    sha256 = "63261df402c67811e9ac6def069e4786148c4563f4b50fd4bf30aa370d626b02";
+    deps = [ serde_derive ];
+  };
+
+  serde_derive = fetchCrate {
+    name = "serde_derive";
+    version = "1.0.195";
+    sha256 = "46fe8f8603d81ba86327b23a2e9cdf49e1255fb94a4c5f297f6ee0547178ea2c";
+    deps = [ proc-macro2 quote syn ];
+  };
+
+  serde_json = fetchCrate {
+    name = "serde_json";
+    version = "1.0.111";
+    sha256 = "176e46fa42316f18edd598015a5166857fc835ec732f5215eac6b7bdbf0a84f4";
+    deps = [ itoa ryu serde ];
+  };
+
+  serde_spanned = fetchCrate {
+    name = "serde_spanned";
+    version = "0.6.5";
+    sha256 = "eb3622f419d1296904700073ea6cc23ad690adbd66f13ea683df73298736f0c1";
+    deps = [ ];
+  };
+
+  sha2 = fetchCrate {
+    name = "sha2";
+    version = "0.10.8";
+    sha256 = "793db75ad2bcafc3ffa7c68b215fee268f537982cd901d132f89c6343f3a3dc8";
+    deps = [ cfg-if cpufeatures digest ];
+  };
+
+  slab = fetchCrate {
+    name = "slab";
+    version = "0.4.9";
+    sha256 = "8f92a496fb766b417c996b9c5e57daf2f7ad3b0bebe1ccfca4856390e3d3bb67";
+    deps = [ autocfg ];
+  };
+
+  smallvec = fetchCrate {
+    name = "smallvec";
+    version = "1.11.2";
+    sha256 = "4dccd0940a2dcdf68d092b8cbab7dc0ad8fa938bf95787e1b916b0e3d0e8e970";
+    deps = [ ];
+  };
+
+  socket2 = fetchCrate {
+    name = "socket2";
+    version = "0.5.5";
+    sha256 = "7b5fac59a5cb5dd637972e5fca70daf0523c9067fcdc4842f053dae04a18f8e9";
+    deps = [ libc windows-sys ];
+  };
+
+  strsim = fetchCrate {
+    name = "strsim";
+    version = "0.11.0";
+    sha256 = "5ee073c9e4cd00e28217186dbe12796d692868f432bf2e97ee73bed0c56dfa01";
+    deps = [ ];
+  };
+
+  syn = fetchCrate {
+    name = "syn";
+    version = "2.0.48";
+    sha256 = "0f3531638e407dfc0814761abb7c00a5b54992b849452a0646b7f65c9f770f3f";
+    deps = [ proc-macro2 unicode-ident ];
+  };
+
+  tempfile = fetchCrate {
+    name = "tempfile";
+    version = "3.9.0";
+    sha256 = "01ce4141aa927a6d1bd34a041795abd0db1cccba5d5f24b009f694bdf3a1f3fa";
+    deps = [ cfg-if fastrand redox_syscall rustix windows-sys ];
+  };
+
+  termcolor = fetchCrate {
+    name = "termcolor";
+    version = "1.4.0";
+    sha256 = "ff1bc3d3f05aff0403e8ac0d92ced918ec05b666a43f83297ccef5bea8a3d449";
+    deps = [ winapi-util ];
+  };
+
+  textwrap = fetchCrate {
+    name = "textwrap";
+    version = "0.16.0";
+    sha256 = "222a222a5bfe1bba4a77b45ec488a741b3cb8872e5e499451fd7d0129c9c7c3d";
+    deps = [ ];
+  };
+
+  thiserror = fetchCrate {
+    name = "thiserror";
+    version = "1.0.56";
+    sha256 = "d54378c645627613241d077a3a79db965db602882668f9136ac42af9ecb730ad";
+    deps = [ thiserror-impl ];
+  };
+
+  thiserror-impl = fetchCrate {
+    name = "thiserror-impl";
+    version = "1.0.56";
+    sha256 = "fa0faa943b50f3db30a20aa7e265dbc66076993efed8463e8de414e5d06d3471";
+    deps = [ proc-macro2 quote syn ];
+  };
+
+  time = fetchCrate {
+    name = "time";
+    version = "0.3.31";
+    sha256 = "f657ba42c3f86e7680e53c8cd3af8abbe56b5491790b46e22e19c0d57463583e";
+    deps = [ deranged powerfmt time-core ];
+  };
+
+  time-core = fetchCrate {
+    name = "time-core";
+    version = "0.1.2";
+    sha256 = "ef927ca75afb808a4d64dd374f00a2adf8d0fcff8e7b184af886c3c87ec4a3f3";
+    deps = [ ];
+  };
+
+  tinyvec = fetchCrate {
+    name = "tinyvec";
+    version = "1.6.0";
+    sha256 = "87cc5ceb3875bb20c2890005a4e226a4651264a5c75edb2421b52861a0a0cb50";
+    deps = [ ];
+  };
+
+  tokio = fetchCrate {
+    name = "tokio";
+    version = "1.35.1";
+    sha256 = "c89b4efa943be685f629b149f53829423f8f5531ea21249408e8e2f8671ec104";
+    deps = [ backtrace pin-project-lite ];
+  };
+
+  tokio-util = fetchCrate {
+    name = "tokio-util";
+    version = "0.7.10";
+    sha256 = "5419f34732d9eb6ee4c3578b7989078579b7f039cbbb9ca2c4da015749371e15";
+    deps = [ bytes futures-core futures-sink pin-project-lite tokio ];
+  };
+
+  toml = fetchCrate {
+    name = "toml";
+    version = "0.8.8";
+    sha256 = "a1a195ec8c9da26928f773888e0742ca3ca1040c6cd859c919c9f59c1954ab35";
+    deps = [ serde serde_spanned toml_datetime ];
+  };
+
+  toml_datetime = fetchCrate {
+    name = "toml_datetime";
+    version = "0.6.5";
+    sha256 = "3550f4e9685620ac18a50ed434eb3aec30db8ba93b0287467bca5826ea25baf1";
+    deps = [ ];
+  };
+
+  tracing = fetchCrate {
+    name = "tracing";
+    version = "0.1.40";
+    sha256 = "c3523ab5a71916ccf420eebdf5521fcef02141234bbc0b8a49f2fdc4544364ef";
+    deps = [ pin-project-lite tracing-core ];
+  };
+
+  tracing-core = fetchCrate {
+    name = "tracing-core";
+    version = "0.1.32";
+    sha256 = "c06d3da6113f116aaee68e4d601191614c9053067f9ab7f6edbcb161237daa54";
+    deps = [ ];
+  };
+
+  typenum = fetchCrate {
+    name = "typenum";
+    version = "1.17.0";
+    sha256 = "42ff0bf0c66b8238c6f3b578df37d0b7848e55df8577b3f74f92a69acceeb825";
+    deps = [ ];
+  };
+
+  unicode-bidi = fetchCrate {
+    name = "unicode-bidi";
+    version = "0.3.14";
+    sha256 = "6f2528f27a9eb2b21e69c95319b30bd0efd85d09c379741b0f78ea1d86be2416";
+    deps = [ ];
+  };
+
+  unicode-ident = fetchCrate {
+    name = "unicode-ident";
+    version = "1.0.12";
+    sha256 = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b";
+    deps = [ ];
+  };
+
+  unicode-normalization = fetchCrate {
+    name = "unicode-normalization";
+    version = "0.1.22";
+    sha256 = "5c5713f0fc4b5db668a2ac63cdb7bb4469d8c9fed047b1d0292cc7b0ce2ba921";
+    deps = [ tinyvec ];
+  };
+
+  unicode-width = fetchCrate {
+    name = "unicode-width";
+    version = "0.1.11";
+    sha256 = "e51733f11c9c4f72aa0c160008246859e340b00807569a0da0e7a1079b27ba85";
+    deps = [ ];
+  };
+
+  unicode-xid = fetchCrate {
+    name = "unicode-xid";
+    version = "0.2.4";
+    sha256 = "f962df74c8c05a667b5ee8bcf162993134c104e96440b663c8daa176dc772d8c";
+    deps = [ ];
+  };
+
+  url = fetchCrate {
+    name = "url";
+    version = "2.5.0";
+    sha256 = "31e6302e3bb753d46e83516cae55ae196fc0c309407cf11ab35cc51a4c2a4633";
+    deps = [ form_urlencoded idna percent-encoding ];
+  };
+
+  uuid = fetchCrate {
+    name = "uuid";
+    version = "1.6.1";
+    sha256 = "5e395fcf16a7a3d8127ec99782007af141946b4795001f876d54fb0d55978560";
+    deps = [ ];
+  };
+
+  version_check = fetchCrate {
+    name = "version_check";
+    version = "0.9.4";
+    sha256 = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f";
+    deps = [ ];
+  };
+
+  wasi = fetchCrate {
+    name = "wasi";
+    version = "0.11.0+wasi-snapshot-preview1";
+    sha256 = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423";
+    deps = [ ];
+  };
+
+  winapi = fetchCrate {
+    name = "winapi";
+    version = "0.3.9";
+    sha256 = "5c839a674fcd7a98952e593242ea400abe93992746761e38641405d28b00f419";
+    deps = [ winapi-i686-pc-windows-gnu winapi-x86_64-pc-windows-gnu ];
+  };
+
+  winapi-i686-pc-windows-gnu = fetchCrate {
+    name = "winapi-i686-pc-windows-gnu";
+    version = "0.4.0";
+    sha256 = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6";
+    deps = [ ];
+  };
+
+  winapi-util = fetchCrate {
+    name = "winapi-util";
+    version = "0.1.6";
+    sha256 = "f29e6f9198ba0d26b4c9f07dbe6f9ed633e1f3d5b8b414090084349e46a52596";
+    deps = [ winapi ];
+  };
+
+  winapi-x86_64-pc-windows-gnu = fetchCrate {
+    name = "winapi-x86_64-pc-windows-gnu";
+    version = "0.4.0";
+    sha256 = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f";
+    deps = [ ];
+  };
+
+  windows-sys = fetchCrate {
+    name = "windows-sys";
+    version = "0.52.0";
+    sha256 = "282be5f36a8ce781fad8c8ae18fa3f9beff57ec1b52cb3de0789201425d9a33d";
+    deps = [ windows-targets ];
+  };
+
+  windows-targets = fetchCrate {
+    name = "windows-targets";
+    version = "0.52.0";
+    sha256 = "8a18201040b24831fbb9e4eb208f8892e1f50a37feb53cc7ff887feb8f50e7cd";
+    deps = [ windows_aarch64_gnullvm windows_aarch64_msvc windows_i686_gnu windows_i686_msvc windows_x86_64_gnu windows_x86_64_gnullvm windows_x86_64_msvc ];
+  };
+
+  windows_aarch64_gnullvm = fetchCrate {
+    name = "windows_aarch64_gnullvm";
+    version = "0.52.0";
+    sha256 = "cb7764e35d4db8a7921e09562a0304bf2f93e0a51bfccee0bd0bb0b666b015ea";
+    deps = [ ];
+  };
+
+  windows_aarch64_msvc = fetchCrate {
+    name = "windows_aarch64_msvc";
+    version = "0.52.0";
+    sha256 = "bbaa0368d4f1d2aaefc55b6fcfee13f41544ddf36801e793edbbfd7d7df075ef";
+    deps = [ ];
+  };
+
+  windows_i686_gnu = fetchCrate {
+    name = "windows_i686_gnu";
+    version = "0.52.0";
+    sha256 = "a28637cb1fa3560a16915793afb20081aba2c92ee8af57b4d5f28e4b3e7df313";
+    deps = [ ];
+  };
+
+  windows_i686_msvc = fetchCrate {
+    name = "windows_i686_msvc";
+    version = "0.52.0";
+    sha256 = "ffe5e8e31046ce6230cc7215707b816e339ff4d4d67c65dffa206fd0f7aa7b9a";
+    deps = [ ];
+  };
+
+  windows_x86_64_gnu = fetchCrate {
+    name = "windows_x86_64_gnu";
+    version = "0.52.0";
+    sha256 = "3d6fa32db2bc4a2f5abeacf2b69f7992cd09dca97498da74a151a3132c26befd";
+    deps = [ ];
+  };
+
+  windows_x86_64_gnullvm = fetchCrate {
+    name = "windows_x86_64_gnullvm";
+    version = "0.52.0";
+    sha256 = "1a657e1e9d3f514745a572a6846d3c7aa7dbe1658c056ed9c3344c4109a6949e";
+    deps = [ ];
+  };
+
+  windows_x86_64_msvc = fetchCrate {
+    name = "windows_x86_64_msvc";
+    version = "0.52.0";
+    sha256 = "dff9641d1cd4be8d1a070daf9e3773c5f67e78b4d9d42263020c057706765c04";
+    deps = [ ];
+  };
+
+  zerocopy = fetchCrate {
+    name = "zerocopy";
+    version = "0.7.32";
+    sha256 = "74d4d3961e53fa4c9a25a8637fc2bfaf2595b3d3ae34875568a5cf64787716be";
+    deps = [ zerocopy-derive ];
+  };
+
+  zerocopy-derive = fetchCrate {
+    name = "zerocopy-derive";
+    version = "0.7.32";
+    sha256 = "9ce1b18ccd8e73a9321186f97e46f9f04b778851177567b1975109d26a08d2a6";
+    deps = [ proc-macro2 quote syn ];
+  };
 }

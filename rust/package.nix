@@ -3,7 +3,7 @@
 , lib
 , pkgs
 , removeReferencesTo
-, rootCallPackage
+, pkgsBuildBuild
 , symlinkJoin
 , python3
 , hostTriple
@@ -23,6 +23,7 @@ attrs@{ name
 , ...
 }:
 let
+  rootCallPackage = pkgsBuildBuild.callPackage;
   # "Compiler type" dependencies, buildPlatform = hostPlatform != targetPlatform
   # host = the platform that the resulting binary will run on (i.e. the host platform of
   # the produced artifact, not our host platform)
@@ -83,8 +84,8 @@ let
     {
       name = "rust-setup-hook";
       substitutions = {
-        rustLibSrc = lib.optionalString (rustPlatform.rust.rustc ? src) rustPlatform.rustLibSrc;
-        addPrefixupHook = lib.optionalString (rustPlatform.rust.rustc ? src) ''
+        rustLibSrc = lib.optionalString (rustc ? src) rustPlatform.rustLibSrc;
+        addPrefixupHook = lib.optionalString (rustc ? src) ''
           preFixupHooks+=(remove_rustlibsrc)
         '';
       };
@@ -94,7 +95,7 @@ in
 base.mkDerivation
   (
     safeAttrs // {
-      inherit stdenv propagatedBuildInputs buildInputs runner checkInputs;
+      inherit stdenv propagatedBuildInputs runner checkInputs buildInputs;
       shellCommands = {
         cargo = {
           script = ''
@@ -152,19 +153,31 @@ base.mkDerivation
       && !(builtins.any (pred: pred path type) srcExclude);
 
       nativeBuildInputs = [
+        rustc
+        cargo
         rustHooks
         cacert
         removeReferencesTo
       ]
-      ++ (builtins.attrValues rustPlatform.rust)
       ++ nativeBuildInputs;
 
       lintInputs = [
-        clippy
+        # workaround for https://github.com/NixOS/nixpkgs/issues/278508
+        (if hostTriple != buildTriple then
+          (clippy.overrideAttrs
+            (a: {
+              pname = "${a.pname}-patched";
+              nativeBuildInputs = a.nativeBuildInputs or [ ] ++ [ pkgsBuildBuild.makeWrapper ];
+              preFixup = ''
+                ${a.preFixup or ""}
+                mv $out/bin/clippy-driver $out/bin/.clippy-driver
+                makeWrapper $out/bin/.clippy-driver $out/bin/clippy-driver --append-flags "--sysroot ${rustc}"
+              '';
+            })) else clippy)
         rustfmt
       ];
 
-      passthru = { shellInputs = (shellInputs ++ [ rust-analyzer ]); };
+      passthru = { shellInputs = shellInputs ++ [ rust-analyzer ]; };
 
       depsBuildBuild = [ buildPackages.stdenv.cc runner ]
       ++ lib.optionals stdenv.buildPlatform.isDarwin [
@@ -218,11 +231,11 @@ base.mkDerivation
               };
             };
           in
-          ({
+          {
             cargoLock = if filterCargoLock then "Cargo.lock" else "#Cargo.lock";
             CARGO_NAME = cfg.author;
             CARGO_EMAIL = cfg.email;
-          } // attrs.targetSetup.variables or { });
+          } // attrs.targetSetup.variables or { };
         initCommands = ''cargo init --name ${name}
         ${attrs.targetSetup.initCommands or ""}'';
       };
@@ -239,7 +252,7 @@ base.mkDerivation
       let
         flagList = lib.optional (attrs ? RUSTFLAGS) attrs.RUSTFLAGS
         ++ lib.optional warningsAsErrors "-D warnings"
-        ++ lib.optional (stdenv.hostPlatform.isWasi) "-Clinker-flavor=gcc";
+        ++ lib.optional stdenv.hostPlatform.isWasi "-Clinker-flavor=gcc";
       in
       lib.optionalAttrs (flagList != [ ]) {
         RUSTFLAGS = builtins.concatStringsSep " " flagList;

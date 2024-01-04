@@ -1,4 +1,4 @@
 { base, callPackage }:
 {
-  languages.protobuf = callPackage ./protobuf { inherit base; languages = base.languages; };
+  languages.protobuf = callPackage ./protobuf { inherit base; inherit (base) languages; };
 }

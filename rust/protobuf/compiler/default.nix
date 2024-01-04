@@ -1,4 +1,4 @@
-{ base, protobuf, tonicBuildVersion, makeSetupHook }:
+{ base, protobuf, tonicBuildVersion, makeSetupHook, crates }:
 let
   changeTonicBuildVersionHook = makeSetupHook
     {
@@ -7,11 +7,17 @@ let
         inherit tonicBuildVersion;
       };
     } ./changeTonicBuildVersion.sh;
+
+  crates' = if crates == null then import ./crates.nix base.languages.rust.fetchCrate else crates;
 in
 base.languages.rust.mkClient {
   name = "rust-protobuf-compiler";
   src = ./.;
   PROTOC = "${protobuf}/bin/protoc";
   nativeBuildInputs = [ changeTonicBuildVersionHook ];
-  buildInputs = with base.languages.rust; [ crates.prost-build crates.structopt crates.tonic-build ];
+  buildInputs = [
+    crates'.prost-build
+    crates'.structopt
+    crates'.tonic-build
+  ];
 }

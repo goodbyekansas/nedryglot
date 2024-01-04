@@ -16,7 +16,7 @@ let
     , stdenv
     , symlinkJoin
     , fetchurl
-    , tonicVersion ? "0.7.2"
+    , tonicVersion ? "0.10.2"
     , xdg-utils
     , crates ? null
     , crossTargets ? { }
@@ -46,8 +46,7 @@ let
         {
           inherit name attrs hostTriple;
           mkPackage = pkgs.callPackage ./package.nix ({
-            inherit base hostTriple buildTriple;
-            rootCallPackage = callPackage;
+            inherit base hostTriple buildTriple python3;
           } // rustToolsetArgs);
         } // lib.optionalAttrs (output != null) { inherit output; };
 
@@ -151,7 +150,7 @@ let
       overrideAttrs = attrs: inner (args // attrs);
 
       overrideCrossTargets = f: inner (args // {
-        crossTargets = (crossTargets // (f crossTargets));
+        crossTargets = crossTargets // (f crossTargets);
       });
 
       toApplication = package:
@@ -207,7 +206,7 @@ let
         });
 
       addAttributes = f: inner (args // {
-        extraAttrs = (extraAttrs // (f extraAttrs));
+        extraAttrs = extraAttrs // (f extraAttrs);
       });
 
       fetchCrate = { name, version, sha256, deps ? [ ] }:
@@ -232,10 +231,11 @@ let
           '';
         };
 
+      crates' = if crates == null then import ./default-crates.nix fetchCrate else crates;
     in
     extraAttrs // {
       inherit overrideAttrs mkRustToolset mkCrossTarget overrideCrossTargets toApplication toLibrary mkLibrary addAttributes toRustTarget fetchCrate;
-      crates = if crates == null then import ./default-crates.nix fetchCrate else crates;
+      crates = crates';
       crossTargets = crossTargets' // {
         override = overrideCrossTargets;
       };
@@ -281,7 +281,8 @@ let
                 version
                 includeServices
                 protoInputs
-                tonicVersion;
+                tonicVersion
+                crates;
               tonicBuildVersion = tonicVersion;
               pyToml = python3.pkgs.toml;
               tonicFeatures = [ "tls" "tls-roots" ];
@@ -293,8 +294,8 @@ let
             name = "${name}-rust-protobuf";
             src = generatedCode;
             propagatedBuildInputs = builtins.map (pi: pi.rust.rust) protoInputs
-            ++ lib.optionals (crates != null) [ crates.prost crates.tempfile ]
-            ++ lib.optional (crates != null && includeServices) crates.tonic;
+            ++ [ crates'.prost crates'.tempfile crates'.bytes ]
+            ++ lib.optional includeServices crates'.tonic;
 
             # Disabling the check phase as we do not care about
             # formatting or testing generated code.

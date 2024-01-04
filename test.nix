@@ -1,6 +1,6 @@
 nedryland:
 let
-  pkgs = nedryland.pkgs;
+  inherit (nedryland) pkgs;
   mockBase = rec {
     versionAtLeast = _: true;
     mkComponent = attrs: attrs // { isNedrylandComponent = true; };
@@ -12,7 +12,7 @@ let
     mkDerivation = attrs:
       let
         inner = attrs: attrs // { isNedrylandDerivation = true; type = "derivation"; };
-        drv = (pkgs.lib.makeOverridable inner attrs);
+        drv = pkgs.lib.makeOverridable inner attrs;
       in
       drv // {
         overrideAttrs = f: drv // (f drv);

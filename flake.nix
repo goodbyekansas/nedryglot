@@ -1,19 +1,30 @@
 {
   description = "Polyglot extension for Nedryland.";
 
-  inputs.nedryland = {
-    url = github:goodbyekansas/nedryland/9.0.0;
-    inputs.nixpkgs.follows = "nixpkgs";
+  inputs = {
+    nedryland = {
+      url = "github:goodbyekansas/nedryland/10.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "nixpkgs/nixos-23.11";
+    nixpkgs_22_11.url = "nixpkgs/nixos-22.11";
   };
-  inputs.flake-utils.url = github:numtide/flake-utils;
-  inputs.nixpkgs.url = "nixpkgs/nixos-22.05";
-  inputs.nixpkgs_22_11.url = "nixpkgs/nixos-22.11";
 
   outputs = { nedryland, flake-utils, nixpkgs, nixpkgs_22_11, ... }:
     flake-utils.lib.eachDefaultSystem
       (system:
         let
-          pkgs = nixpkgs.legacyPackages."${system}";
+          pkgs = import nixpkgs {
+            inherit system;
+            config = {
+              allowUnfreePredicate = pkg:
+                builtins.elem
+                  (builtins.parseDrvName pkg.name or pkg.pname).name
+                  [ "terraform" ];
+            };
+          };
           nedry = nedryland.lib."${system}" {
             inherit pkgs;
           };
@@ -21,7 +32,7 @@
         {
           lib = import ./.;
           packages = {
-            checks = nedry.checks;
+            inherit (nedry) checks;
             docs = import ./docs.nix {
               inherit pkgs;
             };
@@ -57,6 +68,18 @@
                   ${pkgs.python3}/bin/python ${./rust/gen-crates-expr.py} "$@"
                 ''
                 }/bin/gen-crates-expr";
+            };
+            gen-default-crates = {
+              type = "app";
+              program = "${pkgs.writeScriptBin
+                "gen-default-crates"
+                ''
+                  PYTHONPATH="${pkgs.python3.pkgs.semver}/${pkgs.python3.sitePackages}" \
+                  ${pkgs.python3}/bin/python ${./rust/gen-crates-expr.py} \
+                  $(${pkgs.curl}/bin/curl -s "https://crates.io/api/v1/crates?per_page=100&sort=downloads" | ${pkgs.jq}/bin/jq -r '[.crates[].name]|join(" ")') prost prost-derive \
+                  "$@"
+                ''
+                }/bin/gen-default-crates";
             };
           };
         }

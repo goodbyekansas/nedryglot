@@ -10,5 +10,5 @@ base.languages.python.mkLibrary {
   # propagatedBuildInputs so it becomes available to components
   # depending in this component.
   # [Documentation](https://nixos.org/manual/nixpkgs/stable/#ssec-stdenv-dependencies)
-  propagatedBuildInputs = (pp: [ pp.numpy ]);
+  propagatedBuildInputs = pp: [ pp.numpy ];
 }

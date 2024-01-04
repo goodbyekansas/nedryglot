@@ -10,6 +10,7 @@
 , tonicFeatures
 , tonicBuildVersion
 , pyToml
+, crates
 }:
 let
   protoIncludePaths = builtins.map (pi: pi.protobuf) protoInputs;
@@ -18,7 +19,7 @@ let
 in
 base.mkDerivation {
   inherit protoSources protoIncludePaths rustInputs;
-  rustProtoCompiler = (base.callFile ./protobuf/compiler { inherit tonicBuildVersion; }).rust;
+  rustProtoCompiler = (base.callFile ./protobuf/compiler { inherit tonicBuildVersion crates; }).rust;
   name = "${name}-rust-protobuf-src";
 
   PROTOC = "${protobuf}/bin/protoc";

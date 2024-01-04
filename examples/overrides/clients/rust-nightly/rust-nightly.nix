@@ -2,7 +2,7 @@
 let
   # Get a nightly version
   # Note that the oxalica attribute was added in overrides.nix.
-  rustRelease = base.languages.rust.oxalica.nightly."2022-11-29".default.override {
+  rustRelease = base.languages.rust.oxalica.nightly."2024-01-04".default.override {
     extensions = [ "rust-analyzer" "rust-src" ];
   };
 in
