@@ -3,8 +3,10 @@
 declare -a CRATEPATH=()
 setup_cratepath() {
     shopt -s globstar
-    for cratepath in $(dirname "$1"/**/Cargo.toml); do
-        CRATEPATH+=("$cratepath")
+    shopt -s nullglob
+
+    for cratepath in "$1"/**/Cargo.toml; do
+        CRATEPATH+=("$(dirname "$cratepath")")
     done
 }
 

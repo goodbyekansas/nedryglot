@@ -24,10 +24,12 @@ To ease writing of multiple such expressions there's a CLI tool
 flake. Use `gen-crate-expression --help` for usage information.
 
 A set of crates has also been generated and ships with nedryglot under
-`base.languages.rust.crates`. These are roughly equivalent to the crates
-available in [Rust Playground](https://play.rust-lang.org/). This default crate
-set can be overridden by making an extension. This extension overrides the crate
-set with a set of one crate:
+`base.languages.rust.crates`. These are roughly equivalent to the crates available in
+[Rust Playground](https://play.rust-lang.org/) (that is, the 100 most downloaded crates on
+[crates.io](https://crates.io/crates?sort=downloads)). This default crate set can be
+overridden by making an extension. This extension overrides the crate set with a set of
+one crate:
+
 ```nix
 { base }:
 {

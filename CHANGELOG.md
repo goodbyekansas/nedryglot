@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `gen-default-crates` command to generate the list of default crates shipped with
+  Nedryglot.
+- Support for nixpkgs versions up to 23.11
+
+### Changed
+- Now uses Nedryland version 10.0.0
+
 ## [2.0.1] - 2023-12-05
 
 ### Fixed

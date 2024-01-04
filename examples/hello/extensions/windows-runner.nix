@@ -1,9 +1,10 @@
 { writeScriptBin
 , openssh
-, wineWowPackages
+, wine64
 , bash
 , makeSetupHook
 , writeTextFile
+, xvfb-run
 }:
 makeSetupHook
 {
@@ -52,17 +53,27 @@ makeSetupHook
         elif [ -z "$NEDRYGLOT_DONT_USE_WINE" ]; then
           echo "🍷 NEDRYGLOT_WINDOWS_HOST not set, trying wine..."
           cacheFolder="''${XDG_CACHE_HOME:-$HOME/.cache}"/nedryglot/
-          if [ ! -w "$HOME" ]; then
-            cacheFolder=$(mktemp -d --tmpdir nedryglot-wine-XXXXX)
+          wineCommand="${wine64}/bin/wine64"
+          wineArgs=()
+
+          if [ -z "''${IN_NIX_SHELL:-}" ]; then
+            cacheFolder="$NIX_BUILD_TOP"/home/.cache/nedryglot
+            HOME="$NIX_BUILD_TOP"/home
+            mkdir -p "$HOME"
+            wineCommand="${xvfb-run}/bin/xvfb-run $wineCommand"
           fi
+
           mkdir -p "$cacheFolder/.wine"
           cacheFolder="$cacheFolder"
           export WINEPREFIX="$cacheFolder"/.wine
           export WINEDEBUG=fixme-all,warn-all
           export WINEDLLOVERRIDES='mscoree,mshtml='
-          echo "🍾 Starting wineserver..."
-          ${wineWowPackages.stable}/bin/wineserver --persistent=300 || echo "🥂 Wineserver already running"
-          ${wineWowPackages.stable}/bin/wine64 "$@"
+
+          if [ -n "''${IN_NIX_SHELL:-}" ]; then
+            echo "🍾 Starting wineserver..."
+            ${wine64}/bin/wineserver --persistent=300 || echo "🥂 Wineserver already running"
+          fi
+          $wineCommand "''${wineArgs[@]}" "$@"
         else
           echo "Please set NEDRYGLOT_WINDOWS_HOST to a Windows host where you have SSH access."
           exit 1

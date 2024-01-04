@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="ormgrop",
-    version="revision-2551478512",
+    version="10.3.1",
     url="www.snek-pit.gov",
     author="Mr.Snek",
     author_email="snek@pit.com",

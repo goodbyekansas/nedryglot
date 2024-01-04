@@ -38,32 +38,32 @@
         ]
       },
       "locked": {
-        "lastModified": 1699346145,
-        "narHash": "sha256-jlPDDo/tLb4GjJK4iO7iNtkJA9YUHtRgDKJDf2/IitM=",
+        "lastModified": 1704793135,
+        "narHash": "sha256-aSnaRtIiC+9upOv5mLmdaQmQ9Lzd56FXWzfv2MRyEyQ=",
         "owner": "goodbyekansas",
         "repo": "nedryland",
-        "rev": "1f30728cd66257bd6911de73fbf5630ff97100b9",
+        "rev": "3999f03f5087297c299f563ca064278b58a86703",
         "type": "github"
       },
       "original": {
         "owner": "goodbyekansas",
-        "ref": "9.0.0",
+        "ref": "nixpkgs-23.11",
         "repo": "nedryland",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1672580127,
-        "narHash": "sha256-3lW3xZslREhJogoOkjeZtlBtvFMyxHku7I/9IVehhT8=",
+        "lastModified": 1703992652,
+        "narHash": "sha256-C0o8AUyu8xYgJ36kOxJfXIroy9if/G6aJbNOpA5W0+M=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0874168639713f547c05947c76124f78441ea46c",
+        "rev": "32f63574c85fbc80e4ba1fbb932cde9619bad25e",
         "type": "github"
       },
       "original": {
         "id": "nixpkgs",
-        "ref": "nixos-22.05",
+        "ref": "nixos-23.11",
         "type": "indirect"
       }
     },

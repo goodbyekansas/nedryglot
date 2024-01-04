@@ -22,11 +22,11 @@ in
     , protoInputs ? [ ]
     }:
     let
-      langs = (builtins.listToAttrs
+      langs = builtins.listToAttrs
         (builtins.map
           (lang:
             {
-              name = lang.name;
+              inherit (lang) name;
               value =
                 lang.fromProtobuf (
                   builtins.intersectAttrs
@@ -40,8 +40,7 @@ in
                 );
             })
           (builtins.filter (value: value ? fromProtobuf) languages)
-        )
-      );
+        );
     in
     base.mkComponent (langs // {
       inherit name;

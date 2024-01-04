@@ -5,7 +5,8 @@ authors = ["Goodbye Kansas Pipeline Team <pipeline@goodbyekansas.com>"]
 edition = "2021"
 
 [dependencies]
-prost-build = "0.10.4"
-structopt = "0.3"
-tonic-build = "0.7"
+# The version of prost-build is determined by tonic-build
+prost-build = "*"
+structopt = "0.3.26"
+tonic-build = "0.10.2"
 

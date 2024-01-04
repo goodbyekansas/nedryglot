@@ -1,6 +1,6 @@
 { base, sphinx, lib }:
 let
-  docsConfig = (lib.filterAttrs (_: v: v != "" && v != [ ]) (base.parseConfig {
+  docsConfig = lib.filterAttrs (_: v: v != "" && v != [ ]) (base.parseConfig {
     key = "docs";
     structure = {
       python = {
@@ -12,7 +12,7 @@ let
       authors = [ ];
       logo = "";
     };
-  }));
+  });
 
   sphinxTheme = {
     rtd = {
@@ -21,24 +21,20 @@ let
     };
   }."${docsConfig.python.sphinx-theme}" or null;
 
-  componentConfig = (lib.filterAttrs (_: v: v != "") (base.parseConfig {
+  componentConfig = lib.filterAttrs (_: v: v != "") (base.parseConfig {
     key = "components";
     structure = { author = ""; };
-  }));
+  });
 
   author =
     if docsConfig ? authors then
       builtins.concatStringsSep ", " docsConfig.authors
-    else if docsConfig ? author then
-      docsConfig.author
-    else if componentConfig ? author then
-      componentConfig.author
-    else "Unknown";
+    else docsConfig.author or (componentConfig.author or "Unknown");
 
   logo =
     if docsConfig ? logo then
       (
-        if (builtins.isPath docsConfig.logo && builtins.pathExists (docsConfig.logo)) then {
+        if (builtins.isPath docsConfig.logo && builtins.pathExists docsConfig.logo) then {
           source = docsConfig.logo;
           path = "./${builtins.baseNameOf docsConfig.logo}";
         } else { path = docsConfig.logo; }

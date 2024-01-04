@@ -73,12 +73,12 @@ let
     if builtins.isFunction attrsOrFn' then
       attrsOrFn'
     else
-      {}: attrsOrFn';
+      _: attrsOrFn';
 
   fn = args:
     let
-      attrs = (attrsFn args);
-      mkDerivationArgs = ({
+      attrs = attrsFn args;
+      mkDerivationArgs = {
         inherit stdenv;
         doCheck = true;
         strictDeps = true;
@@ -165,13 +165,13 @@ let
           };
         }
         // attrs.shellCommands or { };
-      });
+      };
 
       platformAttrs = mkDerivationArgs // (platformOverrides mkDerivationArgs);
       attrs' = platformAttrs // (overrideAttrs platformAttrs);
 
     in
-    (base.mkDerivation attrs');
+    base.mkDerivation attrs';
 
   splicedComponents = base.mapComponentsRecursive
     (_path: component:

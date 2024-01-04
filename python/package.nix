@@ -1,16 +1,24 @@
-{ base, lib, checkHook, symlinkJoin, gitignoreFilter, gitignoreSource }:
+{ base, lib, checkHook, symlinkJoin }:
 pythonVersionName: pythonVersion:
 args@{ name
 , version
 , src
 , srcExclude ? [ ]
 , preBuild ? ""
-, format ? "setuptools"
 , setuptoolsLibrary ? false
 , doStandardTests ? true
 , ...
 }:
 let
+  gitignore = (import (builtins.fetchTarball {
+    url = "https://github.com/hercules-ci/gitignore.nix/archive/a20de23b925fd8264fd7fad6454652e142fd7f73.tar.gz";
+    sha256 = "sha256:07vg2i9va38zbld9abs9lzqblz193vc5wvqd6h7amkmwf66ljcgh";
+  })) {
+    lib = lib // (lib.optionalAttrs (! lib ? inPureEvalMode) {
+      inPureEvalMode = ! builtins ? currentSystem;
+    });
+  };
+
   pythonPkgs = pythonVersion.pkgs;
   resolveInputs = typeName: inputs:
     builtins.filter
@@ -28,7 +36,7 @@ let
   customerFilter = src:
     let
       # IMPORTANT: use a let binding like this to memoize info about the git directories.
-      srcIgnored = gitignoreFilter src;
+      srcIgnored = gitignore.gitignoreFilter src;
     in
     path: type:
       (srcIgnored path type) && !(builtins.any (pred: pred path type) srcExclude);
@@ -39,12 +47,9 @@ let
           inherit (args) src;
           filter = customerFilter args.src;
           name = "${name}-source";
-        } else gitignoreSource args.src;
+        } else gitignore.gitignoreSource args.src;
 
   attrs = builtins.removeAttrs args [ "srcExclude" "shellInputs" "targetSetup" "docs" "docsConfig" ];
-  hookAndChecks = [ (checkHook src pythonPkgs) ]
-    ++ (resolveInputs "checkInputs" attrs.checkInputs or [ ]);
-
 
   # Aside from propagating dependencies, buildPythonPackage also injects
   # code into and wraps executables with the paths included in this list.
@@ -62,48 +67,72 @@ let
         lib.optional (args ? targetSetup.templateDir) args.targetSetup.templateDir
       ) ++ [ ./component-template ];
     };
-    variables = (rec {
+    variables = rec {
       inherit version;
       pname = name;
       mainPackage = lib.toLower (builtins.replaceStrings [ "-" " " ] [ "_" "_" ] name);
       entryPoint = if setuptoolsLibrary then "{}" else "{\\\"console_scripts\\\": [\\\"${name}=${mainPackage}.main:main\\\"]}";
-    } // args.targetSetup.variables or { });
-    variableQueries = ({
+    } // args.targetSetup.variables or { };
+    variableQueries = {
       desc = "✍️ Write a short description for your component:";
       author = "🤓 Enter author name:";
       email = "📧 Enter author email:";
       url = "🏄 Enter author website url:";
-    } // args.targetSetup.variableQueries or { });
+    } // args.targetSetup.variableQueries or { };
     initCommands = "black .";
   });
 
-  pythonPackageArgs = (attrs // {
-    inherit version format preBuild doStandardTests pythonVersion propagatedBuildInputs;
+  pythonPackageArgs = attrs // {
+    inherit version preBuild doStandardTests pythonVersion propagatedBuildInputs;
     src = if lib.isStorePath src then src else filteredSrc;
     pname = name;
 
     # Don't install dependencies with pip, let nix handle that
     preInstall = ''
       pipInstallFlags+=('--no-deps')
+      ${attrs.preInstall or ""}
     '';
 
-    # Dependencies needed for running the checkPhase. These are added to nativeBuildInputs when doCheck = true.
+    nativeCheckInputs = resolveInputs "nativeCheckInputs" attrs.nativeCheckInputs or [ ];
+
+    # Dependencies needed for running the checkPhase. These are added to buildInputs when doCheck = true.
     # Items listed in tests_require go here.
-    checkInputs = hookAndChecks
-      ++ (builtins.map (input: pythonPkgs."types-${input.pname or input.name}" or null) (builtins.filter lib.isDerivation propagatedBuildInputs))
-      ++ (lib.optional (format == "setuptools") pythonPkgs.types-setuptools);
+    checkInputs =
+      let
+        getTypePackageName = pkg: "types-${pkg.pname or pkg.name}";
+      in
+      (resolveInputs "checkInputs" attrs.checkInputs or [ ])
+        ++ (builtins.map
+        (input: pythonPkgs."${getTypePackageName input}")
+        (builtins.filter
+          (val:
+            let
+              typePackageName = getTypePackageName val;
+              # Have to do this check some packages (type)
+              # just throw exception instead of just being
+              # removed.
+              isValid = (builtins.hasAttr typePackageName pythonPkgs) &&
+                (builtins.tryEval pythonPkgs."${typePackageName}").success;
+            in
+            lib.isDerivation val && isValid
+          )
+          propagatedBuildInputs)
+      )
+        ++ (lib.optional (attrs.format or "setuptools" == "setuptools") pythonPkgs.types-setuptools);
 
     # Build-time only dependencies. Typically executables as well
     # as the items listed in setup_requires
-    nativeBuildInputs = resolveInputs "nativeBuildInputs" attrs.nativeBuildInputs or [ ];
+    nativeBuildInputs = resolveInputs "nativeBuildInputs" attrs.nativeBuildInputs or [ ]
+      # make sure to add check hook here to get it before any shell inputs
+      # in path
+      ++ (lib.optional (attrs.doCheck or true) (checkHook src pythonPkgs));
 
     # Build and/or run-time dependencies that need to be be compiled
     # for the host machine. Typically non-Python libraries which are being linked.
     buildInputs = resolveInputs "buildInputs" attrs.buildInputs or [ ];
 
     passthru = {
-      shellInputs = hookAndChecks
-        ++ [ pythonPkgs.python-lsp-server pythonPkgs.pylsp-mypy pythonPkgs.pyls-isort targetSetup ]
+      shellInputs = [ pythonPkgs.python-lsp-server pythonPkgs.pylsp-mypy pythonPkgs.pyls-isort targetSetup ]
         ++ args.shellInputs or [ ];
       inherit pythonPackageArgs;
     } // attrs.passthru or { };
@@ -135,6 +164,6 @@ let
           black, coverage, flake8, isort, mypy, pylint, pytest'';
       };
     } // attrs.shellCommands or { });
-  });
+  };
 in
 pythonPkgs.buildPythonPackage pythonPackageArgs

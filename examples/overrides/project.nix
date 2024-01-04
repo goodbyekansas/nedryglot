@@ -1,4 +1,4 @@
-{ nedryland, oxalica, pkgs }:
+{ nedryland, oxalica, nedryglot, pkgs }:
 let
   nedry = nedryland { inherit pkgs; };
 in
@@ -18,7 +18,7 @@ nedry.mkProject
 
   baseExtensions =
     let
-      glot = import ../../default.nix { };
+      glot = nedryglot;
     in
     [
       glot.languages

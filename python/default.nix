@@ -15,8 +15,8 @@ let
         outputs = pythonPackage.outputs or [ "out" ] ++ [ "wheel" ];
         postInstall = ''
           ${pythonPackage.postInstall or ""}
-          mkdir -p "$wheel"
-          cp dist/*.whl "$wheel"
+          mkdir -p "${builtins.placeholder "wheel"}"
+          cp dist/*.whl "${builtins.placeholder "wheel"}"
         '';
       }
     );
@@ -33,7 +33,7 @@ let
           makePkg = attrName: python: overrides: postPackageFunc python (mkPackage attrName python (callPython python overrides));
           pkg = attrName: python: makePkg attrName python { };
         in
-        (builtins.mapAttrs
+        builtins.mapAttrs
           (k: p: (
             if buildWheel then
               (addWheelOutput (pkg k p)) // { override = attr: addWheelOutput (makePkg k p attr); }
@@ -41,8 +41,7 @@ let
               (pkg k p) // { override = makePkg k p; }
           )
           )
-          pythons
-        );
+          pythons;
       defaultPackage = builtins.getAttr defaultPythonName packages;
       defaultAttrs = callPython pythons.python { };
 
@@ -80,7 +79,7 @@ rec {
         inherit version;
         name = "${name}-python-protobuf";
         src = callPackage ./protobuf.nix { inherit base name version protoSources protoInputs; };
-        propagatedBuildInputs = (pypkgs: [ pypkgs.grpcio ] ++ builtins.map (pi: pi.python) protoInputs);
+        propagatedBuildInputs = pypkgs: [ pypkgs.grpcio ] ++ builtins.map (pi: pi.python) protoInputs;
         doStandardTests = false; # We don't want to run our strict tests on generated code and stubs
       } // {
       __functor = self: { author, email }: self.overrideAttrs (_: {

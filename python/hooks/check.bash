@@ -20,7 +20,7 @@ standardTests() (
 
     set +e
     echo -e "\n\x1b[1;36mBlack:\x1b[0m"
-    if [[ "$(command -v black)" == /nix/store* ]]; then
+    if [[ "$(command -v black)" =~ ^/nix/store/.*$ ]]; then
         # shellcheck disable=SC2086
         black ${blackArgs:-} --check .  2>&1 | sed 's/^/  /'
         blackStatus=$?
@@ -59,7 +59,7 @@ standardTests() (
     fi
 
     echo -e "Summary:
-  black: $(printStatus ${blackStatus:-skipped})
+  black: $(printStatus "${blackStatus:-skipped}")
   isort: $(printStatus $isortStatus)
   pylint: $(printStatus $pylintStatus)
   flake8: $(printStatus $flake8Status)

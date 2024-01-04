@@ -16,7 +16,7 @@ let
     , ...
     }:
     let
-      attrs = (builtins.removeAttrs attrs' [ "variables" "srcExclude" "shellCommands" ]);
+      attrs = builtins.removeAttrs attrs' [ "variables" "srcExclude" "shellCommands" ];
     in
     base.mkComponent rec {
       inherit name;
@@ -63,7 +63,7 @@ let
 
       } // (lib.optionalAttrs enableTargetSetup {
         targetSetup = base.mkTargetSetup {
-          name = attrs.name;
+          inherit (attrs) name;
           typeName = "terraform";
           markerFiles = attrs.targetSetup.markerFiles or [ ] ++ [ "main.tf" ];
 

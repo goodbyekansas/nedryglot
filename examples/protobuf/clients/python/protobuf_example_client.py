@@ -1,6 +1,8 @@
 """ Example illustrating a transitive dependency on a protobuf module """
-from diplodocus.foundation.core_pb2 import DependOnMe
-from ext.ext_pb2 import DependingOnIt
+from diplodocus.foundation.core_pb2 import (  # pylint: disable=no-name-in-module
+    DependOnMe,
+)
+from ext.ext_pb2 import DependingOnIt  # pylint: disable=no-name-in-module
 
 
 def main() -> None:

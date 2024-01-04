@@ -26,12 +26,13 @@ assert dependency.python.pythonVersion == (builtins.head dependency.python.build
 
 # Test that checkInputs are included by default but not if doCheck = false;
 let
+  attr = if pkgs.lib.versionOlder pkgs.lib.version "23.05pre-git" then "checkInputs" else "nativeCheckInputs";
   withChecks = (python.mkClient {
     name = "with-checks";
     version = "test";
     src = ./.;
     nativeBuildInputs = [ "native-build-input-1" ];
-    checkInputs = [ "check-input-1" ];
+    "${attr}" = [ "check-input-1" ];
   }).python;
   withoutChecks = (python.mkClient {
     name = "without-checks";
@@ -39,7 +40,7 @@ let
     doCheck = false;
     src = ./.;
     nativeBuildInputs = [ "native-build-input-1" ];
-    checkInputs = [ "check-input-1" ];
+    "${attr}" = [ "check-input-1" ];
   }).python;
 in
 assert builtins.elem "check-input-1" withChecks.nativeBuildInputs;
@@ -49,27 +50,34 @@ assert !builtins.elem "check-input-1" withoutChecks.nativeBuildInputs;
 # Client with python overridden, should have corresponding pythonVersion in the output
 let
   clientOverriddenVersion = (python.override {
-    python = pkgs.python;
+    python = pkgs.python3;
   }).mkClient {
     name = "python-version-default";
     version = "ultra";
     src = null;
   };
 in
-assert clientOverriddenVersion.python.pythonVersion == pkgs.python;
+assert clientOverriddenVersion.python.pythonVersion == pkgs.python3;
 
 # Multiple python version and dependencies accesses the correct python
 let
-  pythonLang = (python.override {
-    python = pkgs.python310;
-    pythonVersions = {
-      # Note that it is not required to include python310 in the set
-      # since it is the default. You can include it in case you want
-      # to have a python310 target but it will be the same as the
-      # `python` target.
-      inherit (pkgs) python38 python311;
+  pythons = {
+    "22.11pre-git" = {
+      python = pkgs.python310;
+      pythonVersions = {
+        inherit (pkgs) python38 python311;
+      };
     };
-  });
+    default = {
+      python = pkgs.python311;
+      pythonVersions = {
+        inherit (pkgs) python39 python312;
+      };
+    };
+  };
+
+  pythons' = pythons.${pkgs.lib.version} or pythons.default;
+  pythonLang = python.override pythons';
 
   lib = pythonLang.mkLibrary {
     name = "bibblan";
@@ -81,7 +89,7 @@ let
     name = "pythons-with-nixpkg-dep";
     version = "none";
     src = null;
-    propagatedBuildInputs = (p: [ p.requests lib ]);
+    propagatedBuildInputs = p: [ p.requests lib ];
   };
   # In nixpkgs 22.11 and later, the interpreter was added to propagatedBuildInputs.
   expectedPythonDepsLen = if pkgs.lib.versionOlder pkgs.lib.version "22.11pre-git" then 2 else 3;
@@ -92,9 +100,11 @@ let
     in
     builtins.length pythonDeps == expectedPythonDepsLen && builtins.all (py: py.pythonModule == pythonVersion) pythonDeps;
 in
-assert checker pkgs.python310 clientWithNixpkgDep.python;
-assert checker pkgs.python311 clientWithNixpkgDep.python311;
-assert checker pkgs.python38 clientWithNixpkgDep.python38;
+assert checker pythons'.python clientWithNixpkgDep.python;
+# check that all passed in pythonVersions are included in the output
+assert builtins.filter
+  (p: !(builtins.hasAttr p clientWithNixpkgDep))
+  (builtins.attrNames pythons'.pythonVersions) == [ ];
 
 # Ensure that we get wheel for setuptools projects but not for custom ones
 let

@@ -4,7 +4,7 @@ let
   rust = oxalica (pkgs // rust) pkgs;
 
   # Pick a rust release
-  rustRelease = rust.rust-bin.stable."1.65.0".default.override {
+  rustRelease = rust.rust-bin.stable."1.75.0".default.override {
     extensions = [ "rust-analyzer" "rust-src" ];
 
     # If the project has any cross compile targets you need to list
@@ -13,6 +13,26 @@ let
     # nixpkgs this works out of the box.
     # targets = [];
   };
+
+  py =
+    if pkgs.lib.versionAtLeast pkgs.lib.version "23.11pre-git" then {
+      python = pkgs.python310;
+      pythonVersions = {
+        inherit (pkgs) python310 python311;
+      };
+    }
+    else if pkgs.lib.versionAtLeast pkgs.lib.version "23.05pre-git" then
+      {
+        python = pkgs.python39;
+        pythonVersions = {
+          inherit (pkgs) python39 python310 python311;
+        };
+      } else {
+      python = pkgs.python38;
+      pythonVersions = {
+        inherit (pkgs) python38 python39 python310;
+      };
+    };
 in
 {
   # Apply the rust release for all tools
@@ -25,11 +45,5 @@ in
   })) // { oxalica = rust.rust-bin; };
 
   # Override the python targets you want for your components.
-  languages.python = base.languages.python.override {
-    # Set the default python version.
-    python = pkgs.python38;
-    pythonVersions = {
-      inherit (pkgs) python38 python39 python310;
-    };
-  };
+  languages.python = base.languages.python.override py;
 }

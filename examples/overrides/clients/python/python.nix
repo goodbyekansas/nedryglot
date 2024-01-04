@@ -1,6 +1,6 @@
 { base }:
 base.languages.python.mkClient {
   name = "ormgrop";
-  version = "revision-2551478512";
+  version = "10.3.1";
   src = ./.;
 }

@@ -2,8 +2,10 @@
   description = "Example project demonstrating Protobuf functionality.";
 
   inputs = {
-    pkgs.url = github:NixOS/nixpkgs/nixos-22.11;
-    nedryland.url = github:goodbyekansas/nedryland/move-to-nedryglot;
+    pkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nedryglot.url = "path:../..";
+    nedryglot.inputs.nixpkgs.follows = "pkgs";
+    nedryland.follows = "nedryglot/nedryland";
   };
 
   outputs = { pkgs, nedryland, ... }:
