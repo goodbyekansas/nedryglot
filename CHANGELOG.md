@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2024-02-06
+
 ### Added
 - `gen-default-crates` command to generate the list of default crates shipped with
   Nedryglot.
