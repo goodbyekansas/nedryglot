@@ -31,3 +31,15 @@ nedryland.mkProject
   ];
 }
 ```
+
+
+# Changing the default checkphase
+
+```nix
+base.languages.python.override {
+    # Change the default tests and formatter to use ruff
+    defaultCheckPhase = "ruffStandardTests";
+};
+```
+
+The above example changes the default tests and formatter to use ruff.

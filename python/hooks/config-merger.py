@@ -31,7 +31,14 @@ def change_header(config: dict, from_header: str, to_header: str) -> dict:
             else:
                 return {}
 
-    return {to_header: sub_config}
+    # store the settings under the desired
+    # `to_header`
+    header_sub_config = to_header.split(".")
+    for key in reversed(header_sub_config):
+        if key:
+            sub_config = {key: sub_config}
+
+    return sub_config
 
 
 def parse_toml(config_file: str) -> dict:
@@ -192,7 +199,7 @@ def main():
 
     with open(out_file, "w", encoding="utf-8") as output_file:
         if out_file.suffix == ".toml":
-            toml.dump({"tool": combined_config}, output_file)
+            toml.dump(combined_config, output_file)
         else:
             config_parser = ConfigParser()
             config_parser.read_dict(combined_config)

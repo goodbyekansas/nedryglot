@@ -132,8 +132,15 @@ let
     buildInputs = resolveInputs "buildInputs" attrs.buildInputs or [ ];
 
     passthru = {
-      shellInputs = [ pythonPkgs.python-lsp-server pythonPkgs.pylsp-mypy pythonPkgs.pyls-isort targetSetup ]
-        ++ args.shellInputs or [ ];
+      shellInputs = [
+        pythonPkgs.python-lsp-server
+        pythonPkgs.pylsp-mypy
+        pythonPkgs.pyls-isort
+        pythonPkgs.python-lsp-ruff
+        pythonPkgs.ruff-lsp
+        targetSetup
+      ]
+      ++ args.shellInputs or [ ];
       inherit pythonPackageArgs;
     } // attrs.passthru or { };
 
@@ -146,7 +153,7 @@ let
         show = attrs.doCheck or true;
       };
       format = {
-        script = "black . && isort .";
+        script = "runFormat";
         description = "Format the code.";
       };
       build = {

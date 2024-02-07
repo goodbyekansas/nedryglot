@@ -9,4 +9,5 @@ base.languages.python.mkClient {
   # Here we just use numpyWrapper since it's our own
   # package and not part of the python version packages.
   propagatedBuildInputs = [ numpyWrapper ];
+  installCheckPhase = "ruffStandardTests";
 }

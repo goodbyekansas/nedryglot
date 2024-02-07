@@ -1,4 +1,12 @@
-{ makeSetupHook, writeTextFile, pkgs, bat, findutils, lib }:
+{ makeSetupHook
+, writeTextFile
+, pkgs
+, bat
+, findutils
+, lib
+, defaultCheckPhase
+, ruff
+}:
 let
   generateConfigurationRunner =
     { toolDerivation
@@ -8,6 +16,8 @@ let
     , configFlag ? "--config"
     , extraArgs ? ""
     , files ? [ ]
+    , customExecution ? null
+    ,
     }:
     let
       remove = builtins.foldl' (acc: cur: "${acc} ${cur}") ""
@@ -17,6 +27,11 @@ let
             files));
 
       py = if lib.versionAtLeast lib.version "23.05pre-git" then pkgs.python3 else pkgs.python310;
+      execution =
+        if customExecution == null then
+          "${toolDerivation}/bin/${toolName} ${configFlag} \"$config_file\" \"$@\" ${extraArgs}"
+        else
+          customExecution;
     in
     writeTextFile {
       name = "${toolName}-with-nedryglot-cfg";
@@ -55,33 +70,55 @@ let
           exit 0
         fi
 
-        ${toolDerivation}/bin/${toolName} ${configFlag} "$config_file" "$@" ${extraArgs}
+        ${execution}
       '';
       destination = "/bin/${toolName}";
     };
 
   blackWithConfig = toolDerivation: generateConfigurationRunner {
     inherit toolDerivation;
-    key = "black";
+    key = "tool.black";
     config = "black.toml";
     files = [
-      { path = "pyproject.toml"; key = "tool.black"; }
-      "setup.cfg"
-      { path = ./config/black.toml; key = "tool.black"; }
+      "pyproject.toml"
+      { path = "setup.cfg"; key = "black"; }
+      ./config/black.toml
+    ];
+  };
+
+  ruffWithConfig = toolDerivation: generateConfigurationRunner {
+    inherit toolDerivation;
+    # Ruff can only take the config argument for the sub commands
+    # check and format which is kind of annoying.
+    customExecution = ''
+      configArgs=""
+      if [[ ! " $* " =~ [[:blank:]](rule|config|linter|clean|version|help)[[:blank:]] ]]; then
+        configArgs="--config $config_file"
+      fi
+
+      ${toolDerivation}/bin/ruff "$@" $configArgs
+    '';
+    key = "";
+    config = "ruff.toml";
+    files = [
+      { path = "pyproject.toml"; key = "tool.ruff"; }
+      "ruff.toml"
+      ".ruff.toml"
+      { path = ./config/ruff.toml; key = "tool.ruff"; }
     ];
   };
 
   coverageWithConfig = toolDerivation: generateConfigurationRunner {
     inherit toolDerivation;
-    key = "coverage";
+    key = "tool.coverage";
     config = "coverage.toml";
     configFlag = "--rcfile";
     files = [
-      ".coveragerc"
+      { path = ".coveragerc"; key = "coverage"; }
       { path = "setup.cfg"; key = "tool:coverage"; }
       { path = "tox.ini"; key = "tool:coverage"; }
-      { path = "pyproject.toml"; key = "tool.coverage"; }
-      { path = ./config/coverage.toml; key = "tool.coverage"; }
+      "pyproject.toml"
+      ./config/coverage.toml
     ];
   };
 
@@ -133,19 +170,17 @@ let
     inherit toolDerivation;
     configFlag = "--rcfile";
     config = "pylint.toml";
-    key = "pylint";
+    key = "tool.pylint";
     files = [
       { path = "pylintrc"; key = ""; }
       { path = ".pylintrc"; key = ""; }
-      { path = "pyproject.toml"; key = "tool.pylint"; }
-      {
-        path =
-          if lib.versionAtLeast toolDerivation.version "2.14" then
-            ./config/pylint2_14.toml
-          else
-            ./config/pylint.toml;
-        key = "tool.pylint";
-      }
+      "pyproject.toml"
+      (
+        if lib.versionAtLeast toolDerivation.version "2.14" then
+          ./config/pylint2_14.toml
+        else
+          ./config/pylint.toml
+      )
     ];
   };
 
@@ -171,6 +206,10 @@ in
     makeSetupHook
       {
         name = "check-hook";
+        substitutions = {
+          inherit defaultCheckPhase;
+        };
+
         "${depsAttr}" = with pythonPkgs; [
           findutils
           (coverageWithConfig coverage)
@@ -179,6 +218,7 @@ in
           (mypyWithConfig mypy)
           (pylintWithConfig pylint)
           (pytestWithConfig pytest)
+          (ruffWithConfig ruff)
           # pytest is also useful as a module in PYTHONPATH for fixtures and such
           pytest
         ]

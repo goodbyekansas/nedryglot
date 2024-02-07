@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Ruff support for python components. Currently have to opt in by
+  setting `defaultCheckPhase = "ruffStandardTests";` on
+  `base.languages.python`. This will change the global default for the
+  python language. To set it for a single component set
+  `installCheckPhase` to `standardTests` or `ruffStandardTests` or any
+  combination of the two. To individually set the formatter set the
+  `formatter` on the component to either "standard" (black + isort) or
+  to "ruff" (ruff 🐕). If formatter is not set it will be detected from the value of `installCheckPhase`.
+
 ## [3.0.0] - 2024-02-06
 
 ### Added
