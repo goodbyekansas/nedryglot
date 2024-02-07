@@ -62,6 +62,16 @@ to add python linting to other types of components.
 
 [^pylint]: ⚠️ Note that Nedryglot does not support pylint config in setup.cfg.
 
+In case you want to use ruff instead of black, isort, pylint, and
+flake8, you can set `installCheckPhase` to `ruffStandardTests`
+instead.
+
+#### Formatting
+
+By default the formatter will follow the selected check variant (ruff
+or black+isort). However, this can be overridden by setting the
+`formatter` attribute to `ruff` or `standard`.
+
 
 ### Api docs
 Nedryglot will output python API docs, by default using

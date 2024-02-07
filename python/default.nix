@@ -1,9 +1,15 @@
-{ base, callPackage, lib, python, pythonVersions ? { } }:
+{ base
+, callPackage
+, lib
+, python
+, pythonVersions ? { }
+, defaultCheckPhase ? "standardTests"
+}:
 let
   pythons = pythonVersions // { inherit python; };
   defaultPythonName = "python";
 
-  hooks = callPackage ./hooks { };
+  hooks = callPackage ./hooks { inherit defaultCheckPhase; };
 
   mkPackage = callPackage ./package.nix { inherit base; checkHook = hooks.check; };
 
