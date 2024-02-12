@@ -1,2 +1,41 @@
 [tool.ruff]
-select=[ "E4", "E7", "E9", "F", "PLE", "PLW" ]
+select=[
+  "A",
+  "ARG",
+  "BLE",
+  "C4",
+  "E",
+  "E4",
+  "E7",
+  "E9",
+  "EXE",
+  "F",
+  "ISC",
+  "PLC",
+  "PLE",
+  "PLW",
+  "RSE",
+  "RET",
+  "S",
+  "SLF",
+  "SIM",
+  "TID",
+  "UP",
+  "W",
+]
+
+[tool.ruff.lint]
+ignore = [
+  "ISC001"  # The following rules may cause conflicts when used with the formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+  "SLF001", # Common to access private members in order to mock things.
+  "S101", # Allowed to use asserts in tests
+]
+"test_*" = [
+  "SLF001", # Common to access private members in order to mock things.
+  "S101", # Allowed to use asserts in tests
+]
+
