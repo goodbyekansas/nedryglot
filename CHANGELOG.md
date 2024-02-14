@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support for overriding python linters config.
+
 ### Changed
 - Ruff default configuration. Now picks upp issues similar to to the
   alternative (isort, black, flake etc).

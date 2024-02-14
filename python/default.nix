@@ -4,12 +4,16 @@
 , python
 , pythonVersions ? { }
 , defaultCheckPhase ? "standardTests"
+, linterConfigs ? { }
 }:
 let
   pythons = pythonVersions // { inherit python; };
   defaultPythonName = "python";
 
-  hooks = callPackage ./hooks { inherit defaultCheckPhase; };
+  hooks = callPackage ./hooks {
+    inherit defaultCheckPhase;
+    configs = linterConfigs;
+  };
 
   mkPackage = callPackage ./package.nix { inherit base; checkHook = hooks.check; };
 
