@@ -5,6 +5,7 @@
 , findutils
 , lib
 , defaultCheckPhase
+, configs
 , ruff
 }:
 let
@@ -82,6 +83,9 @@ let
     files = [
       "pyproject.toml"
       { path = "setup.cfg"; key = "black"; }
+    ] ++
+    (lib.optional (configs ? black) configs.black)
+    ++ [
       ./config/black.toml
     ];
   };
@@ -104,6 +108,9 @@ let
       { path = "pyproject.toml"; key = "tool.ruff"; }
       "ruff.toml"
       ".ruff.toml"
+    ] ++
+    (lib.optional (configs ? ruff) configs.ruff)
+    ++ [
       { path = ./config/ruff.toml; key = "tool.ruff"; }
     ];
   };
@@ -118,6 +125,9 @@ let
       { path = "setup.cfg"; key = "tool:coverage"; }
       { path = "tox.ini"; key = "tool:coverage"; }
       "pyproject.toml"
+    ] ++
+    (lib.optional (configs ? coverage) configs.coverage)
+    ++ [
       ./config/coverage.toml
     ];
   };
@@ -130,6 +140,9 @@ let
       ".flake8"
       "setup.cfg"
       "tox.ini"
+    ] ++
+    (lib.optional (configs ? flake8) configs.flake8)
+    ++ [
       { path = ./config/flake8.toml; key = "tool.pycodestyle"; }
       { path = ./config/flake8.toml; key = "tool.flake8"; }
     ];
@@ -147,6 +160,9 @@ let
       "setup.cfg"
       "tox.ini"
       ".editorconfig"
+    ] ++
+    (lib.optional (configs ? isort) configs.isort)
+    ++ [
       { path = ./config/isort.toml; key = "tool.isort"; }
     ];
   };
@@ -162,6 +178,9 @@ let
       { path = "pyproject.toml"; key = "tool.mypy.overrides"; }
       { path = "pyproject.toml"; key = "tool.mypy"; removeField = "tool.mypy.overrides"; }
       "setup.cfg"
+    ] ++
+    (lib.optional (configs ? mypy) configs.mypy)
+    ++ [
       { path = ./config/mypy.toml; key = "tool.mypy"; }
     ];
   };
@@ -175,12 +194,13 @@ let
       { path = "pylintrc"; key = ""; }
       { path = ".pylintrc"; key = ""; }
       "pyproject.toml"
-      (
-        if lib.versionAtLeast toolDerivation.version "2.14" then
-          ./config/pylint2_14.toml
-        else
-          ./config/pylint.toml
-      )
+    ] ++
+    (lib.optional (configs ? pylint) configs.pylint)
+    ++ [
+      (if lib.versionAtLeast toolDerivation.version "2.14" then
+        ./config/pylint2_14.toml
+      else
+        ./config/pylint.toml)
     ];
   };
 
@@ -195,6 +215,9 @@ let
       { path = "pylintrc.toml"; key = "tool.pytest.ini_options"; }
       "tox.ini"
       { path = "setup.cfg"; key = "tool:pytest"; }
+    ] ++
+    (lib.optional (configs ? pytest) configs.pytest)
+    ++ [
       { path = ./config/pytest.toml; key = "tool.pytest.ini_options"; }
     ];
     extraArgs = "--rootdir=./";
