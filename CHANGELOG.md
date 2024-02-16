@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Naming checks for the default ruff configuration.
 
+### Fixed
+- Missing shebang in python check tools. This caused errors depending
+  on which exec function you used.
+
 ## [4.0.0] - 2024-02-14
 
 ### Added

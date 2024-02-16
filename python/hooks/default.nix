@@ -4,6 +4,7 @@
 , bat
 , findutils
 , lib
+, runtimeShell
 , defaultCheckPhase
 , configs
 , ruff
@@ -38,6 +39,7 @@ let
       name = "${toolName}-with-nedryglot-cfg";
       executable = true;
       text = ''
+        #!${runtimeShell}
         config_file=$TMP/lint-configs/${config}
         mkdir -p "$(dirname "$config_file")"
         export PYTHONPATH=''${PYTHONPATH:-}:${py.pkgs.toml}/${py.sitePackages}
