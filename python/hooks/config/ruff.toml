@@ -11,6 +11,7 @@ select=[
   "EXE",
   "F",
   "ISC",
+  "N",
   "PLC",
   "PLE",
   "PLW",
