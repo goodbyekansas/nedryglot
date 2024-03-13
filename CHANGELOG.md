@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Terraform deploy now sends sigint to terraform on ctrl+C, giving it a chance
+  to shut down a little more gracefully.
+
 ## [4.1.0] - 2024-02-16
 
 ### Added

@@ -6,10 +6,15 @@ import argparse
 import os
 import pathlib
 import shutil
+import signal
 import subprocess
 import sys
+import time
+import types
 import typing
 
+"""Have we received an abort signal (SIGINT/SIGTERM)?"""
+abort_requested: bool = False
 
 def _setup_sources(source: pathlib.Path) -> None:
     shutil.copytree(src=source, dst=os.getcwd(), dirs_exist_ok=True)
@@ -19,10 +24,36 @@ def _setup_sources(source: pathlib.Path) -> None:
             os.chmod(path=os.path.join(root, content), mode=0o755)
 
 
+def _handle_termination(signum: int, frame: typing.Optional[types.FrameType]):
+    # Make sure we always wait for terraform to exit
+    # so it can remove lock files and exit cleanly.
+    print(f"Abort requested ({signal.strsignal(signum)}).")
+    global abort_requested
+    abort_requested = True
+
+
 def _run_terraform(command: str, args: typing.List[str] = None) -> None:
-    subprocess.check_call(
-        ["terraform", command, "-lock-timeout=300s", "-input=false"] + (args or []),
-    )
+    global abort_requested
+    if abort_requested:
+        raise subprocess.CalledProcessError(1, "did-not-start-terraform")
+
+    aborted = False
+    cmd = ["terraform", command, "-lock-timeout=300s", "-input=false"] + (args or [])
+    with subprocess.Popen(cmd, start_new_session=True) as process:
+        while process.poll() is None:
+            if abort_requested:
+                os.killpg(os.getpgid(process.pid), signal.SIGINT)
+                abort_requested = False
+                aborted = True
+                print("Waiting for terraform to exit")
+
+            time.sleep(0.25)
+
+        # terraform returns 0 when aborted via SIGINT
+        if aborted:
+            raise subprocess.CalledProcessError(-signal.SIGINT, " ".join(cmd))
+        elif process.returncode != 0:
+            raise subprocess.CalledProcessError(process.returncode, " ".join(cmd))
 
 
 def apply(args: argparse.Namespace) -> None:
@@ -70,6 +101,9 @@ def main() -> None:
     sub_plan.set_defaults(func=plan)
 
     args = parser.parse_args()
+
+    signal.signal(signal.SIGTERM, _handle_termination)
+    signal.signal(signal.SIGINT, _handle_termination)
 
     try:
         if args.subcommand is None:
