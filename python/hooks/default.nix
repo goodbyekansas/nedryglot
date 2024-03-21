@@ -15,7 +15,8 @@ let
     , key
     , config
     , toolName ? toolDerivation.pname or toolDerivation.name
-    , configFlag ? "--config"
+    , configFlag ? null
+    , configEnvVar ? null
     , extraArgs ? ""
     , files ? [ ]
     , customExecution ? null
@@ -31,7 +32,20 @@ let
       py = if lib.versionAtLeast lib.version "23.05pre-git" then pkgs.python3 else pkgs.python310;
       execution =
         if customExecution == null then
-          "${toolDerivation}/bin/${toolName} ${configFlag} \"$config_file\" \"$@\" ${extraArgs}"
+          let
+            cfgEnvVar =
+              if configEnvVar != null then
+                "${configEnvVar}=\"$config_file\" "
+              else
+                "";
+
+            cfgFlag =
+              if configFlag != null then
+                "${configFlag} \"$config_file\""
+              else
+                "";
+          in
+          "${cfgEnvVar}${toolDerivation}/bin/${toolName} ${cfgFlag} \"$@\" ${extraArgs}"
         else
           customExecution;
     in
@@ -82,6 +96,7 @@ let
     inherit toolDerivation;
     key = "tool.black";
     config = "black.toml";
+    configFlag = "--config";
     files = [
       "pyproject.toml"
       { path = "setup.cfg"; key = "black"; }
@@ -121,7 +136,7 @@ let
     inherit toolDerivation;
     key = "tool.coverage";
     config = "coverage.toml";
-    configFlag = "--rcfile";
+    configEnvVar = "COVERAGE_RCFILE";
     files = [
       { path = ".coveragerc"; key = "coverage"; }
       { path = "setup.cfg"; key = "tool:coverage"; }

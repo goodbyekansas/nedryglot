@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Sphinx documentation can now access the nativeBuildInputs of the source package.
+- Python coverage tool not getting proper configuration.
+
 
 ## [4.1.1] - 2024-03-21
 

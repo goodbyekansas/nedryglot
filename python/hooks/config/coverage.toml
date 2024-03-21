@@ -1,2 +1,5 @@
 [tool.coverage.run]
-omit = ["tests/*"]
+omit = [
+       "tests/*",
+       "*/site-packages/*"]
+
