@@ -51,7 +51,7 @@ in
       nedrylandType = "documentation";
       nativeBuildInputs = [ sphinx ]
         ++ lib.optional (sphinxTheme != null) pythonVersion.pkgs."${sphinxTheme.name}"
-        ++ attrs.pythonPackageArgs.nativeBuildInputs or [ ];
+        ++ attrs.nativeBuildInputs or [ ];
       buildInputs = (attrs.buildInputs or [ ])
         ++ (attrs.propagatedBuildInputs or [ ]);
 
