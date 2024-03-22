@@ -153,6 +153,7 @@ let
     inherit toolDerivation;
     key = "flake8";
     config = "flake8.ini";
+    configFlag = "--config";
     files = [
       ".flake8"
       "setup.cfg"
