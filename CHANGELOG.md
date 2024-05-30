@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Fixed
+- Python check runner not finding config when not in root of component.
+- Fix some outside tools not getting check configs because TMP is not
+  always set.
+
 ## [4.1.3] - 2024-03-22
 
 ## Fixed

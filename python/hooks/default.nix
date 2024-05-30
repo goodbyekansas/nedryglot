@@ -54,9 +54,9 @@ let
       executable = true;
       text = ''
         #!${runtimeShell}
-        config_file=$TMP/lint-configs/${config}
-        mkdir -p "$(dirname "$config_file")"
+        config_file=$(mktemp --tmpdir -d lint-configs-XXXX)/${config}
         export PYTHONPATH=''${PYTHONPATH:-}:${py.pkgs.toml}/${py.sitePackages}
+
         ${py}/bin/python \
           ${./config-merger.py} \
           --tool "${key}" \
@@ -66,7 +66,7 @@ let
                 if builtins.isPath file.path then
                   "${file.path}=${file.key}"
                 else
-                  "./${file.path}=${file.key}"
+                  "\"\${componentDir:-.}/${file.path}=${file.key}\""
               )
               (
                 builtins.map
