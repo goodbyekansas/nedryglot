@@ -32,33 +32,34 @@ let
               sha256 = "sha256:10m80cpdhk1jqvqvkzy8qls7nmsra77fx7rrq4snk0s46z1msafl";
             } else mathjax;
 
-      inner =
+      mkPlatform =
         { name
         , pkgs
         , stdenv ? pkgs.stdenv
         , output ? null
         , platformOverrides ? _: { }
-        }:
+        , factoryOverrides ? { }
+        }@args:
         let
-          factory = pkgs.callPackage (import ./make-derivation.nix platformOverrides)
-            {
+          factory = pkgs.callPackage
+            (import ./make-derivation.nix platformOverrides)
+            ({
               inherit base stdenv components;
               targetName = name;
               mathjax = mathjax';
-            };
+            } // factoryOverrides);
 
           finalPlatform = factory:
             {
               inherit name pkgs;
               __functor = _self: factory;
-              overrideFactory = overrides:
-                finalPlatform (
-                  factory.override overrides);
-            } // lib.optionalAttrs (output != null) { inherit output; };
+              override = overrides:
+                mkPlatform (args // overrides);
+              overrideFactory = factoryOverrides:
+                mkPlatform (args // { inherit factoryOverrides; });
+            } // { inherit output; };
         in
         finalPlatform factory;
-
-      mkPlatform = lib.makeOverridable inner;
 
       platforms' = {
         _default = mkPlatform {
