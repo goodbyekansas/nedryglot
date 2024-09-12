@@ -41,6 +41,7 @@ let
     platforms = {
       _default = cCross.mkPlatform {
         name = "risk-🕔";
+        output = "risc-v";
         pkgs = pkgs.pkgsCross.riscv32;
 
         platformOverrides = pkgAttrs: {
@@ -57,11 +58,11 @@ let
   };
 in
 # With new default target we should have only _default
-assert library ? _default && !(library ? windows);
+assert library ? "🪟" && !(library ? _default);
 # Default target should be there unless overridden
-assert libraryWasi ? _default && libraryWasi ? wasi && libraryWasi._default != libraryWasi.wasi;
+assert libraryWasi ? _default && libraryWasi ? "🐑" && libraryWasi._default != libraryWasi."🐑";
 # With inline, default cross target
-assert libraryRiscv ? _default;
+assert libraryRiscv ? "risc-v";
 
 builtins.trace ''✔️ C tests succeeded ${c.emoji}''
 { }

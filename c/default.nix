@@ -36,7 +36,7 @@ let
         { name
         , pkgs
         , stdenv ? pkgs.stdenv
-        , output ? null
+        , output ? name
         , platformOverrides ? _: { }
         , factoryOverrides ? { }
         }@args:
@@ -45,7 +45,7 @@ let
             (import ./make-derivation.nix platformOverrides)
             ({
               inherit base stdenv components;
-              targetName = name;
+              targetName = output;
               mathjax = mathjax';
             } // factoryOverrides);
 
@@ -71,7 +71,7 @@ let
       createPlatformTargets = attrsOrFn:
         lib.mapAttrs'
           (name: platform: {
-            name = platform.output or name;
+            name = platform.output;
             value = platform attrsOrFn;
           })
           platforms';
