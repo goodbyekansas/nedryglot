@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Fixed
 - Overriding the factory of a C platform caused the 'override' function
   to disappear from the resulting set.
+- `output` now works as expected on C platforms. Previously, setting
+   output to a different value than `name` created a broken
+   configuration.
 
 ## [4.1.4] - 2024-06-03
 
