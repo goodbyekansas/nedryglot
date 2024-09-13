@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.5] - 2024-09-13
+
 ## Fixed
 - Overriding the factory of a C platform caused the 'override' function
   to disappear from the resulting set.
