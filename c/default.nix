@@ -37,6 +37,7 @@ let
         , pkgs
         , stdenv ? pkgs.stdenv
         , output ? name
+        , input ? output
         , platformOverrides ? _: { }
         , factoryOverrides ? { }
         }@args:
@@ -45,7 +46,7 @@ let
             (import ./make-derivation.nix platformOverrides)
             ({
               inherit base stdenv components;
-              targetName = output;
+              targetName = input;
               mathjax = mathjax';
             } // factoryOverrides);
 

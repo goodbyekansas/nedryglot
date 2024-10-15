@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+- `input` parameter to `mkPlatform` for C. This controls what target
+  gets used for dependent components.
+
+## Removed
+- `targetName` no longer gets sent to the `mk*` functions for C.
+
 ## [4.1.5] - 2024-09-13
 
 ## Fixed
