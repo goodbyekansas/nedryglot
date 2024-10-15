@@ -189,5 +189,5 @@ in
 lib.makeOverridable fn (
   builtins.intersectAttrs
     (builtins.functionArgs attrsFn)
-    (pkgs // splicedComponents // { inherit targetName; })
+    (pkgs // splicedComponents // { inherit stdenv; })
 )
