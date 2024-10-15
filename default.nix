@@ -1,6 +1,6 @@
 _:
 {
-  version = "4.1.5";
+  version = "5.0.0";
   languages = import ./languages.nix;
   protobuf = import ./protobuf.nix;
 }
