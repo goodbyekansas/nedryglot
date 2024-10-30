@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools"]
+
+[project]
+name = "@pname@"
+version = "@version@"
+description = "@desc@"
+authors = [{name = "@author@", email = "@email@"}]
+
+[setuptools.packages.find]
+exclude = ["tests*"]
+
+[urls]
+Homepage = "@url@"
+
+[project.scripts]
+@entryPoint@
+

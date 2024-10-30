@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Python now generates a `run` command and cli entry point for clients and services.
+
+### Changed
+- Python now uses `pyproject` instead of `setuptools` by default. Template for targetSetup
+  has been updated accordingly. It also conforms to `ruff`s checks and formatting by default.
+
 ### Fixed
 - Python's config merger now handles mypy overrides targeting multiple packages.
 
