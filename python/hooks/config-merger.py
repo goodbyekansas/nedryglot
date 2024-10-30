@@ -82,12 +82,12 @@ def mypy_overrides(config_file, key) -> dict:
 
     root = {}
     for override in overrides:
-        module_name = f'mypy-{override.pop("module")}'
-        root.update(
-            {
-                module_name: override,
-            }
-        )
+        modules = override.pop("module")
+        if not isinstance(modules, list):
+            modules = [modules]
+        for module in modules:
+            module_name = f'mypy-{module}'
+            root.setdefault(module_name, {}).update(override)
     to_remove = config_file
     for remove_key in keys[:-1]:
         to_remove = to_remove.get(remove_key)
