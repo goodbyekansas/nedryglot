@@ -8,16 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.0.0] - 2024-10-15
 
-## Added
+### Added
 - `input` parameter to `mkPlatform` for C. This controls what target
   gets used for dependent components.
 
-## Removed
+### Removed
 - `targetName` no longer gets sent to the `mk*` functions for C.
 
 ## [4.1.5] - 2024-09-13
 
-## Fixed
+### Fixed
 - Overriding the factory of a C platform caused the 'override' function
   to disappear from the resulting set.
 - `output` now works as expected on C platforms. Previously, setting
@@ -26,14 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.1.4] - 2024-06-03
 
-## Fixed
+### Fixed
 - Python check runner not finding config when not in root of component.
 - Fix some outside tools not getting check configs because TMP is not
   always set.
 
 ## [4.1.3] - 2024-03-22
 
-## Fixed
+### Fixed
 - Flake8 not getting configuration.
 
 ## [4.1.2] - 2024-03-22
