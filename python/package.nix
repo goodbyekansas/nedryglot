@@ -71,7 +71,7 @@ let
       inherit version;
       pname = name;
       mainPackage = lib.toLower (builtins.replaceStrings [ "-" " " ] [ "_" "_" ] name);
-      entryPoint = if setuptoolsLibrary then "{}" else "{\\\"console_scripts\\\": [\\\"${name}=${mainPackage}.main:main\\\"]}";
+      entryPoint = if setuptoolsLibrary then "" else "${name}=\\\"${mainPackage}.main:main\\\"";
     } // args.targetSetup.variables or { };
     variableQueries = {
       desc = "✍️ Write a short description for your component:";
@@ -79,13 +79,18 @@ let
       email = "📧 Enter author email:";
       url = "🏄 Enter author website url:";
     } // args.targetSetup.variableQueries or { };
-    initCommands = "black .";
+    initCommands = ''
+      ${if ! setuptoolsLibrary then "cat ${./main.py.in} >>$mainPackage/main.py" else ""}
+      ruff format .
+      ruff check --fix --unsafe-fixes .
+    '';
   });
 
   pythonPackageArgs = attrs // {
     inherit version preBuild doStandardTests pythonVersion propagatedBuildInputs;
     src = if lib.isStorePath src then src else filteredSrc;
     pname = name;
+    format = attrs.format or "pyproject";
 
     # Don't install dependencies with pip, let nix handle that
     preInstall = ''
@@ -170,7 +175,16 @@ let
           Show the config Nedryland has generated for a linter, one of:
           black, coverage, flake8, isort, mypy, pylint, pytest'';
       };
-    } // attrs.shellCommands or { });
+    } // (
+      lib.optionalAttrs
+        (! setuptoolsLibrary)
+        {
+          run = {
+            script = ''python -m ${name}.main "$@"'';
+            description = "Run the main module.";
+          };
+        })
+    // attrs.shellCommands or { });
   };
 in
 pythonPkgs.buildPythonPackage pythonPackageArgs

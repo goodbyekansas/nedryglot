@@ -1,6 +1,6 @@
-""" @desc@ """
+"""@desc@"""
 
 
 def main() -> None:
-    """ main function of @mainPackage@ """
+    """Main function of @mainPackage@."""
     raise NotImplementedError
