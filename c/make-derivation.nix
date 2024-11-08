@@ -106,7 +106,7 @@ let
           runHook preLint
           if [ -z "''${dontCheckClangFormat:-}" ]; then
             echo "🏟 Checking format in C/C++ files..."
-            ${buildPackages.fd}/bin/fd --ignore-file=.gitignore --glob '*.[h,hpp,hh,cpp,cxx,cc,c]' --exec-batch clang-format -Werror -n --style=LLVM
+            ${buildPackages.fd}/bin/fd --ignore-file=.gitignore --glob '*.{h,hpp,hh,cpp,cxx,cc,c}' --exec-batch clang-format -Werror -n --style=LLVM
             rc=$?
 
             if [ $rc -eq 0 ]; then
@@ -129,7 +129,7 @@ let
             script = ''
               runHook preFormat
               echo "🏟️ Formatting C++ files..."
-              ${buildPackages.fd}/bin/fd --glob '*.[h,hpp,hh,cpp,cxx,cc,c]' --exec-batch clang-format --style=LLVM -i "$@"
+              ${buildPackages.fd}/bin/fd --glob '*.{h,hpp,hh,cpp,cxx,cc,c}' --exec-batch clang-format --style=LLVM -i "$@"
               runHook postFormat
             '';
             description = "Format source code in the component.";
