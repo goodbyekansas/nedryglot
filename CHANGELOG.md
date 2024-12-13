@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Fixed
+- c/c++: Use more appropriate versions of clangd and clang-format when
+  cross-compiling since the target platform does not actually
+  matter.
+- c/c++: Use a debugger for the shell that comes from buildPackages
+  to get the correct hostPlatform when cross-compiling.
+- c/c++: Enabling doxygen required the `name` attribute. Now,
+  pname is enough as well.
+- c/c++: Use a more appropriate variant of `fd`, since it
+  does not depend on the target platform when cross-compiling.
+
 ## [5.1.0] - 2024-12-12
 
 ### Added

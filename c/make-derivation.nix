@@ -4,8 +4,8 @@ platformOverrides:
 , pkgs
 , lib
 , buildPackages
+, pkgsBuildBuild
 , substitute
-, writeShellScriptBin
 , components
 , targetName
 , doxygenOutputDir ? "doc"
@@ -29,7 +29,7 @@ let
     replacements = [
       "--subst-var-by"
       "name"
-      attrs.name
+      attrs.name or attrs.pname
       "--subst-var-by"
       "version"
       attrs.version
@@ -40,7 +40,7 @@ let
   };
 
 
-  wrappedDoxygen = outputDir: doxyfiles: writeShellScriptBin "doxygen" ''
+  wrappedDoxygen = outputDir: doxyfiles: pkgsBuildBuild.writeShellScriptBin "doxygen" ''
     set -euo pipefail
     doxyfiles=(${builtins.concatStringsSep " " doxyfiles})
     : ''${componentDir=$PWD}
@@ -48,7 +48,7 @@ let
       doxyfiles+=("$componentDir/Doxyfile")
     fi
     if [[ $@ =~ "--print-generated-config" ]]; then
-      ${buildPackages.bat}/bin/bat "''${doxyfiles[@]}"
+      ${pkgsBuildBuild.bat}/bin/bat "''${doxyfiles[@]}"
       exit 0
     fi
 
@@ -57,9 +57,9 @@ let
     cp --no-preserve=mode "${mathjax}" "${outputDir}"/html/mathjax/MathJax.js
 
     if [ $# -eq 0 ]; then
-      ${buildPackages.doxygen}/bin/doxygen <(cat "''${doxyfiles[@]}")
+      ${pkgsBuildBuild.doxygen}/bin/doxygen <(cat "''${doxyfiles[@]}")
     else
-      ${buildPackages.doxygen}/bin/doxygen "$@"
+      ${pkgsBuildBuild.doxygen}/bin/doxygen "$@"
     fi
   '';
 
@@ -85,7 +85,7 @@ let
         outputs = [ "out" ] ++ lib.optionals (attrs.enableDoxygen or enableDoxygen) [ "doc" "man" ];
       } // attrs // {
         nativeBuildInputs = [
-          buildPackages.clang-tools
+          pkgsBuildBuild.clang-tools
           buildPackages.valgrind
         ]
         ++ attrs.nativeBuildInputs or [ ]
@@ -98,15 +98,24 @@ let
             ]
         );
 
-        shellInputs = [
-          pkgs.${attrs.debugger or "gdb"}
-        ] ++ attrs.shellInputs or [ ];
+        shellInputs = [ buildPackages.${attrs.debugger or "gdb"} ]
+          ++ attrs.shellInputs or [ ];
 
         lintPhase = attrs.lintPhase or ''
+          sourcePath="."
+          if [ -n "''${componentDir:-}" ]; then
+            sourcePath="$componentDir"
+          elif [ -n "''${sourceRoot:-}" ]; then
+            sourcePath="''${NIX_BUILD_TOP:-.}/$sourceRoot"
+          fi
           runHook preLint
+
           if [ -z "''${dontCheckClangFormat:-}" ]; then
-            echo "🏟 Checking format in C/C++ files..."
-            ${buildPackages.fd}/bin/fd --ignore-file=.gitignore --glob '*.{h,hpp,hh,cpp,cxx,cc,c}' --exec-batch clang-format -Werror -n --style=LLVM
+            echo "🏟 Checking format in C/C++ files at \"$sourcePath\"..."
+            (cd "$sourcePath" && ${pkgsBuildBuild.fd}/bin/fd \
+              --ignore-file=.gitignore \
+              --glob '*.{h,hpp,hh,cpp,cxx,cc,c}' \
+              --exec-batch clang-format --verbose -Werror -n --style=LLVM \;)
             rc=$?
 
             if [ $rc -eq 0 ]; then
@@ -127,9 +136,12 @@ let
           };
           format = {
             script = ''
+              cd "''${componentDir:-.}"
               runHook preFormat
               echo "🏟️ Formatting C++ files..."
-              ${buildPackages.fd}/bin/fd --glob '*.{h,hpp,hh,cpp,cxx,cc,c}' --exec-batch clang-format --style=LLVM -i "$@"
+              ${pkgsBuildBuild.fd}/bin/fd \
+                --glob '*.{h,hpp,hh,cpp,cxx,cc,c}' \
+                --exec-batch clang-format --style=LLVM -i "$@" \;
               runHook postFormat
             '';
             description = "Format source code in the component.";
