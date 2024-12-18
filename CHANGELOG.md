@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Fixed
+## [5.1.1] - 2024-12-18
+
+### Fixed
 - c/c++: Use more appropriate versions of clangd and clang-format when
   cross-compiling since the target platform does not actually
   matter.
