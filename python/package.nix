@@ -142,7 +142,6 @@ let
         pythonPkgs.pylsp-mypy
         pythonPkgs.pyls-isort
         pythonPkgs.python-lsp-ruff
-        pythonPkgs.ruff-lsp
         targetSetup
       ]
       ++ args.shellInputs or [ ];
