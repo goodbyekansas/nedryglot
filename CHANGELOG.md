@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.2] - 2025-05-12
+
 ### Fixed
 - python: Remove deprecated package ruff-lsp that is not part of the
   ruff package.
