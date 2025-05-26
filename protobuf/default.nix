@@ -41,16 +41,16 @@ in
             })
           (builtins.filter (value: value ? fromProtobuf) languages)
         );
-        protoset = runCommand
-          "generate-protoset"
-          { }
-          ''
-            ${protobuf}/bin/protoc \
-              --proto_path=${src} \
-              --descriptor_set_out="$out" \
-              --include_imports \
-              ${src}/**/*.proto
-          '';
+      protoset = runCommand
+        "generate-protoset"
+        { }
+        ''
+          ${protobuf}/bin/protoc \
+            --proto_path=${src} \
+            --descriptor_set_out="$out" \
+            --include_imports \
+            ${src}/**/*.proto
+        '';
 
       grpcurlWrapped = writeScriptBin "grpcurl" ''
         case "$1" in
