@@ -88,6 +88,7 @@ rec {
       {
         inherit version;
         name = "${name}-python-protobuf";
+        nativeBuildInputs = [ python.pkgs.setuptools ];
         src = callPackage ./protobuf.nix { inherit base name version protoSources protoInputs; };
         propagatedBuildInputs = pypkgs: [ pypkgs.grpcio ] ++ builtins.map (pi: pi.python) protoInputs;
         doStandardTests = false; # We don't want to run our strict tests on generated code and stubs
