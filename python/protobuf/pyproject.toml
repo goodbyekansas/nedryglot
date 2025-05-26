@@ -1,0 +1,14 @@
+[build-system]
+requires = [ "setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "@packageName@"
+version = "@version@"
+description = "Python type definitions for @packageName@"
+
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools.package-data]

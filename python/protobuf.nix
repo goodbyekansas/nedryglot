@@ -13,8 +13,7 @@ base.mkDerivation {
 
     shopt -s globstar extglob nullglob
 
-    substituteInPlace ./setup.py --subst-var-by packageName ${name} --subst-var-by version ${version}
-
+    substituteInPlace ./pyproject.toml --subst-var-by packageName ${name} --subst-var-by version ${version}
     includes=""
     for p in $protoIncludePaths; do
       includes+=" -I $p"
@@ -31,6 +30,13 @@ base.mkDerivation {
     # protoc does not add __init__.py files, so let's do so
     find . -type d -exec touch {}/__init__.py \;
     find . -type d -exec touch {}/py.typed \;
+
+    find . \
+      -mindepth 1 \
+      -maxdepth 1 \
+      -type d \
+      -exec \
+        sh -c 'echo "$(basename {}) = [\"**/*.pyi\", \"**/py.typed\", \"py.typed\", \"*.pyi\"]" >>./pyproject.toml' \;
   '';
 
   installPhase = ''

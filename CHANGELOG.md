@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- python: Error when creating python protobuf modules.
+
 ## [5.1.2] - 2025-05-12
 
 ### Fixed
