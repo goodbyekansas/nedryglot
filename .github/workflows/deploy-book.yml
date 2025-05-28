@@ -2,7 +2,7 @@ name: 📖 Deploy to Github Pages
 on:
   push:
     branches:
-      - main
+      - update-artefact-action-version
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
         cp --recursive --dereference --no-preserve=mode,ownership result/share/doc/nedryglot/manual dist
 
     - name: Upload Artifact
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         path: ./dist/
 
