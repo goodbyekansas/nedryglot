@@ -13,7 +13,10 @@ base.mkDerivation {
 
     shopt -s globstar extglob nullglob
 
-    substituteInPlace ./pyproject.toml --subst-var-by packageName ${name} --subst-var-by version ${version}
+    substituteInPlace ./pyproject.toml \
+      --subst-var-by packageName ${name} \
+      --subst-var-by version ${version} \
+      --subst-var-by protoVersion ${python3.pkgs.protobuf.version}
     includes=""
     for p in $protoIncludePaths; do
       includes+=" -I $p"

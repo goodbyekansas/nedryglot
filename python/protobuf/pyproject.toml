@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "@packageName@"
 version = "@version@"
 description = "Python type definitions for @packageName@"
-
+dependencies = [ "protobuf==@protoVersion@" ]
 
 [tool.setuptools.packages]
 find = {}
