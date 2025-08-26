@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - python: Error when creating python protobuf modules.
 - python: Python packages always getting wheel output when mkComponent
   args was a function.
+- python: Python components getting shell target setup when `format`
+  was set to other.
 
 ## [5.1.2] - 2025-05-12
 
