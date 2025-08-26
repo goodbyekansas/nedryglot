@@ -57,6 +57,7 @@ let
   propagatedBuildInputs = resolveInputs "propagatedBuildInputs" attrs.propagatedBuildInputs or [ ];
 
   targetSetup = if (args ? targetSetup && lib.isDerivation args.targetSetup) then args.targetSetup else
+  if args ? format && args.format == "other" then null else
   (base.mkTargetSetup {
     name = args.targetSetup.name or args.name;
     typeName = "python";
