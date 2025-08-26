@@ -20,21 +20,24 @@ let
   mkDocs = callPackage ./docs.nix { inherit base; };
 
   addWheelOutput = pythonPackage:
-    pythonPackage.overrideAttrs (_:
-      {
-        outputs = pythonPackage.outputs or [ "out" ] ++ [ "wheel" ];
-        postInstall = ''
-          ${pythonPackage.postInstall or ""}
-          mkdir -p "${builtins.placeholder "wheel"}"
-          cp dist/*.whl "${builtins.placeholder "wheel"}"
-        '';
-      }
-    );
+    # Only build wheel if we have a format that builds a wheel. Duh.
+    if builtins.elem (pythonPackage.pythonPackageArgs.format or "setuptools") [ "setuptools" "flit" "pyproject" ] then
+      pythonPackage.overrideAttrs
+        (_:
+          {
+            outputs = pythonPackage.outputs or [ "out" ] ++ [ "wheel" ];
+            postInstall = ''
+              ${pythonPackage.postInstall or ""}
+              mkdir -p "${builtins.placeholder "wheel"}"
+              cp dist/*.whl "${builtins.placeholder "wheel"}"
+            '';
+          })
+    else
+      pythonPackage;
+
 
   mkComponentWith = componentFunc: postPackageFunc: extraArgs: attrs:
     let
-      # Only build wheel if we have a format that builds a wheel. Duh.
-      buildWheel = builtins.elem (attrs.format or "setuptools") [ "setuptools" "flit" "pyproject" ];
       attrsFn = if builtins.isFunction attrs then attrs else (_: attrs);
       args = builtins.functionArgs attrsFn;
       callPython = pythonVersion: overrides: (attrsFn (builtins.intersectAttrs args (pythonVersion.pkgs // overrides))) // extraArgs;
@@ -44,12 +47,8 @@ let
           pkg = attrName: python: makePkg attrName python { };
         in
         builtins.mapAttrs
-          (k: p: (
-            if buildWheel then
-              (addWheelOutput (pkg k p)) // { override = attr: addWheelOutput (makePkg k p attr); }
-            else
-              (pkg k p) // { override = makePkg k p; }
-          )
+          (k: p:
+            (addWheelOutput (pkg k p)) // { override = attr: addWheelOutput (makePkg k p attr); }
           )
           pythons;
       defaultPackage = builtins.getAttr defaultPythonName packages;
