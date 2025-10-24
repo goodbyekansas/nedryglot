@@ -13,6 +13,7 @@ platformOverrides:
 , enableDoxygen ? true
 , doxygenTheme ? null
 , overrideAttrs ? _: { }
+, overrideAttrsPre ? _pre: _post: { }
 }:
 
 attrsOrFn:
@@ -180,7 +181,8 @@ let
       };
 
       platformAttrs = mkDerivationArgs // (platformOverrides mkDerivationArgs);
-      attrs' = platformAttrs // (overrideAttrs platformAttrs);
+      preAttrs = platformAttrs // (overrideAttrsPre attrs platformAttrs);
+      attrs' = preAttrs // (overrideAttrs preAttrs);
 
     in
     base.mkDerivation attrs';
