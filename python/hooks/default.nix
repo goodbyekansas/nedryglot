@@ -259,8 +259,8 @@ in
           (coverageWithConfig coverage)
           (flake8WithConfig flake8)
           (isortWithConfig isort)
-          (mypyWithConfig mypy)
-          (pylintWithConfig pylint)
+          (mypyWithConfig (mypy.overrideAttrs (old: { doCheck = false; })))
+          (pylintWithConfig (pylint.overrideAttrs (old: { doCheck = false; })))
           (pytestWithConfig pytest)
           (ruffWithConfig ruff)
           # pytest is also useful as a module in PYTHONPATH for fixtures and such

@@ -16,7 +16,7 @@ let
 
   sphinxTheme = {
     rtd = {
-      name = "sphinx_rtd_theme";
+      name = "sphinx-rtd-theme";
       conf = "html_theme = \\\"sphinx_rtd_theme\\\"";
     };
   }."${docsConfig.python.sphinx-theme}" or null;
