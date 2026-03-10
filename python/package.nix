@@ -91,7 +91,7 @@ let
     inherit version preBuild doStandardTests pythonVersion propagatedBuildInputs;
     src = if lib.isStorePath src then src else filteredSrc;
     pname = name;
-    format = attrs.format or "pyproject";
+    pyproject = attrs.pyproject or true;
 
     # Don't install dependencies with pip, let nix handle that
     preInstall = ''
