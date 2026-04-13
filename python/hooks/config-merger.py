@@ -14,6 +14,8 @@ def merge(source: dict, destination: dict) -> dict:
         if isinstance(value, dict):
             node = destination.setdefault(key, {})
             merge(value, node)
+        elif isinstance(value, list) and key in destination and isinstance(destination[key], list):
+            destination[key].extend(value)
         else:
             destination[key] = value
 

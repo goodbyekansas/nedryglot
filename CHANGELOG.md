@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- python: checks do no longer delete the `build` folder.
+  Instead, each tool ignores this folder (created by pip) as needed.
+
 ## [5.3.0]
 
 ### Added

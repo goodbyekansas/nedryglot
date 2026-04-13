@@ -161,6 +161,15 @@ let
         script = "runFormat";
         description = "Format the code.";
       };
+      clean = {
+        description = "Clean build output";
+        script = ''
+          rm -rf "''${componentDir:-.}"/build
+          rm -rf "''${componentDir:-.}"/dist
+          rm -f "''${componentDir:-.}"/nix_run_setup
+          rm -rf "''${componentDir:-.}"/*.egg-info
+        '';
+      };
       build = {
         description = "Build the code";
         script = ''

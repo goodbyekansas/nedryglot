@@ -42,9 +42,6 @@ runTool() {
 }
 
 standardTests() (
-    # clean up after pip
-    rm -rf build/
-
     set +e
     set -o pipefail
 
@@ -86,9 +83,6 @@ standardTests() (
 )
 
 ruffStandardTests() (
-    # clean up after pip
-    rm -rf build/
-
     set +e
     set -o pipefail
 
