@@ -169,7 +169,7 @@ let
   isortWithConfig = toolDerivation: generateConfigurationRunner {
     inherit toolDerivation;
     configFlag = "--settings-file";
-    extraArgs = "--src-path .";
+    extraArgs = "--src-path . --extend-skip ./build";
     key = "isort";
     config = "isort.ini";
     files = [
@@ -190,6 +190,9 @@ let
     configFlag = "--config-file";
     key = "mypy";
     config = "mypy.ini";
+    extraArgs =
+      if lib.versionAtLeast toolDerivation.version "1.16" then
+        "--exclude-gitignore" else "--exclude '^build'";
     files = [
       "mypy.ini"
       ".mypy.ini"
@@ -270,3 +273,4 @@ in
           (blackWithConfig black);
       } ./check.bash;
 }
+
