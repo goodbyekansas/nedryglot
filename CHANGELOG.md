@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - python: checks do no longer delete the `build` folder.
   Instead, each tool ignores this folder (created by pip) as needed.
+- python: `installCheckPhase` is set to `nedryglotPythonInstallCheck`
+  which is a wrapper around the default check phase (ruff or legacy)
+  that also calls hooks as appropriate.
 
 ## [5.3.0]
 
