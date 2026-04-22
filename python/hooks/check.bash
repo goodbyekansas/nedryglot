@@ -125,10 +125,16 @@ ruffStandardTests() (
     exit $((ruffCheckStatus + ruffFormatStatus + mypyStatus + pytestStatus + ruffImportsStatus))
 )
 
+nedryglotPythonInstallCheck() {
+    runHook preInstallCheck
+    @defaultCheckPhase@
+    runHook postInstallCheck
+}
+
 # If there is a checkPhase declared, mk-python-component in nixpkgs will put it in
 # installCheckPhase so we use that phase as well (since this is executed later).
 if [ -n "${doStandardTests-}" ] && [ -z "${installCheckPhase-}" ]; then
-    installCheckPhase=@defaultCheckPhase@
+    installCheckPhase=nedryglotPythonInstallCheck
 fi
 
 runStandardFormat() {
@@ -142,9 +148,10 @@ runRuffFormat() {
 }
 
 runFormat() {
+    # shellcheck disable=SC2050
     if [ "${formatter:-}" = "standard" ]; then
         runStandardFormat
-    elif [ "${formatter:-}" = "ruff" ] || [[ "${installCheckPhase:-}" =~ "ruffStandardTests" ]]; then
+    elif [ "${formatter:-}" = "ruff" ] || [ "@defaultCheckPhase@" = "ruffStandardTests" ]; then
         runRuffFormat
     else
         runStandardFormat
