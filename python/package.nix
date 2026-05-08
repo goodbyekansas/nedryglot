@@ -1,4 +1,4 @@
-{ base, lib, checkHook, symlinkJoin }:
+{ base, lib, checkHookFn, symlinkJoin }:
 pythonVersionName: pythonVersion:
 args@{ name
 , version
@@ -20,6 +20,7 @@ let
   };
 
   pythonPkgs = pythonVersion.pkgs;
+  checkHook = checkHookFn src pythonPkgs;
   resolveInputs = typeName: inputs:
     builtins.filter
       (input:
@@ -131,7 +132,7 @@ let
     nativeBuildInputs = resolveInputs "nativeBuildInputs" attrs.nativeBuildInputs or [ ]
       # make sure to add check hook here to get it before any shell inputs
       # in path
-      ++ (lib.optional (attrs.doCheck or true) (checkHook src pythonPkgs));
+      ++ (lib.optional (attrs.doCheck or true) checkHook);
 
     # Build and/or run-time dependencies that need to be be compiled
     # for the host machine. Typically non-Python libraries which are being linked.
@@ -142,7 +143,16 @@ let
         pythonPkgs.python-lsp-server
         pythonPkgs.pylsp-mypy
         pythonPkgs.pyls-isort
-        pythonPkgs.python-lsp-ruff
+        pythonPkgs.python-lsp-black
+        ((pythonPkgs.python-lsp-ruff.override {
+          inherit (checkHook.tools) ruff;
+        }).overrideAttrs (a: {
+          env = a.env or { } // {
+            # lsp-ruff (reasonably) wants to control
+            # the ruff config
+            NEDRYGLOT_NO_LINT_CONFIG = 1;
+          };
+        }))
         targetSetup
       ]
       ++ args.shellInputs or [ ];
