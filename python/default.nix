@@ -15,7 +15,7 @@ let
     configs = linterConfigs;
   };
 
-  mkPackage = callPackage ./package.nix { inherit base; checkHook = hooks.check; };
+  mkPackage = callPackage ./package.nix { inherit base; checkHookFn = hooks.check; };
 
   mkDocs = callPackage ./docs.nix { inherit base; };
 
