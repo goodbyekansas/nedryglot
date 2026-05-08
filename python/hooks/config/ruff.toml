@@ -38,4 +38,3 @@ select=[
   "SLF001", # Common to access private members in order to mock things.
   "S101", # Allowed to use asserts in tests
 ]
-
