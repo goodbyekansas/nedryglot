@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Terraform deployer for new nixpkgs (>=25.11).
 - Ruff config to be compatible with newer Ruff versions.
 - Use our own ruff wrapper in the pylsp-ruff plugin.
+- Pytest would fail if any directory "between" the root dir and conf dir was unreadable.
 
 ## [5.4.0] - 2026-04-23
 
