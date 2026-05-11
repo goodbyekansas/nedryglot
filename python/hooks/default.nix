@@ -17,7 +17,7 @@ let
     , toolName ? toolDerivation.pname or toolDerivation.name
     , configFlag ? null
     , configEnvVar ? null
-    , extraArgs ? ""
+    , extraArgs ? [ ]
     , files ? [ ]
     }:
     let
@@ -40,6 +40,11 @@ let
         if [ -n "''${NEDRYGLOT_NO_LINT_CONFIG:-}" ] || [[ $@ =~ "${configFlag}" ]]; then
           cfgArgs=()
         fi
+      '' + lib.optionalString (extraArgs != [ ]) ''
+        extraArgs=()
+        if [ -z "''${NEDRYGLOT_NO_LINT_CONFIG:-}" ]; then
+          extraArgs=(${lib.escapeShellArgs extraArgs})
+        fi
       '';
     in
     writeTextFile {
@@ -47,6 +52,9 @@ let
       executable = true;
       text = ''
         #!${runtimeShell}
+        if [ -n "''${NEDRYGLOT_LINT_DEBUG:-}" ]; then
+          set -x
+        fi
         config_file=$(mktemp --tmpdir -d lint-configs-XXXX)/${config}
 
         PYTHONPATH=''${PYTHONPATH:-}:${py.pkgs.toml}/${py.sitePackages} \
@@ -80,7 +88,7 @@ let
         fi
 
         ${preamble}
-        ${toolDerivation}/bin/${toolName} "''${cfgArgs[@]}" "$@" ${extraArgs}
+        ${toolDerivation}/bin/${toolName} "''${cfgArgs[@]}" "''${extraArgs[@]}" "$@"
       '';
       destination = "/bin/${toolName}";
       meta = {
@@ -156,7 +164,7 @@ let
   isortWithConfig = toolDerivation: generateConfigurationRunner {
     inherit toolDerivation;
     configFlag = "--settings-file";
-    extraArgs = "--src-path . --extend-skip ./build";
+    extraArgs = [ "--src-path" "." "--extend-skip" "./build" ];
     key = "isort";
     config = "isort.ini";
     files = [
@@ -179,7 +187,7 @@ let
     config = "mypy.ini";
     extraArgs =
       if lib.versionAtLeast toolDerivation.version "1.16" then
-        "--exclude-gitignore" else "--exclude '^build'";
+        [ "--exclude-gitignore" ] else [ "--exclude" "'^build'" ];
     files = [
       "mypy.ini"
       ".mypy.ini"
@@ -228,7 +236,7 @@ let
     ++ [
       { path = ./config/pytest.toml; key = "tool.pytest.ini_options"; }
     ];
-    extraArgs = "--rootdir=./";
+    extraArgs = [ "--rootdir=./" "--confcutdir=./" ];
   };
   depsAttr = if lib.versionOlder lib.version "23.05pre-git" then "deps" else "propagatedBuildInputs";
 in
