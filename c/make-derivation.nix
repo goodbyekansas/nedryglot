@@ -27,7 +27,7 @@ let
   doxyfile = attrs: substitute {
     name = "Doxyfile";
     src = ./Doxyfile;
-    replacements = [
+    substitutions = [
       "--subst-var-by"
       "name"
       attrs.name or attrs.pname

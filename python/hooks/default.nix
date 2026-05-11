@@ -17,10 +17,8 @@ let
     , toolName ? toolDerivation.pname or toolDerivation.name
     , configFlag ? null
     , configEnvVar ? null
-    , extraArgs ? ""
+    , extraArgs ? [ ]
     , files ? [ ]
-    , customExecution ? null
-    ,
     }:
     let
       remove = builtins.foldl' (acc: cur: "${acc} ${cur}") ""
@@ -30,33 +28,36 @@ let
             files));
 
       py = if lib.versionAtLeast lib.version "23.05pre-git" then pkgs.python3 else pkgs.python310;
-      execution =
-        if customExecution == null then
-          let
-            cfgEnvVar =
-              if configEnvVar != null then
-                "${configEnvVar}=\"$config_file\" "
-              else
-                "";
-
-            cfgFlag =
-              if configFlag != null then
-                "${configFlag} \"$config_file\""
-              else
-                "";
-          in
-          "${cfgEnvVar}${toolDerivation}/bin/${toolName} ${cfgFlag} \"$@\" ${extraArgs}"
-        else
-          customExecution;
+      preamble = ''
+        cfgArgs=()
+      '' + lib.optionalString (configEnvVar != null) ''
+        if [ -n "''${NEDRYGLOT_NO_LINT_CONFIG:-}" ]; then
+          export ${configEnvVar}=\"$config_file\"
+        fi
+      '' + lib.optionalString (configFlag != null) ''
+        # skip setting cfg flag if it is already in the command line
+        cfgArgs=("${configFlag}" "$config_file")
+        if [ -n "''${NEDRYGLOT_NO_LINT_CONFIG:-}" ] || [[ $@ =~ "${configFlag}" ]]; then
+          cfgArgs=()
+        fi
+      '' + lib.optionalString (extraArgs != [ ]) ''
+        extraArgs=()
+        if [ -z "''${NEDRYGLOT_NO_LINT_CONFIG:-}" ]; then
+          extraArgs=(${lib.escapeShellArgs extraArgs})
+        fi
+      '';
     in
     writeTextFile {
       name = "${toolName}-with-nedryglot-cfg";
       executable = true;
       text = ''
         #!${runtimeShell}
+        if [ -n "''${NEDRYGLOT_LINT_DEBUG:-}" ]; then
+          set -x
+        fi
         config_file=$(mktemp --tmpdir -d lint-configs-XXXX)/${config}
-        export PYTHONPATH=''${PYTHONPATH:-}:${py.pkgs.toml}/${py.sitePackages}
 
+        PYTHONPATH=''${PYTHONPATH:-}:${py.pkgs.toml}/${py.sitePackages} \
         ${py}/bin/python \
           ${./config-merger.py} \
           --tool "${key}" \
@@ -76,7 +77,6 @@ let
           )} \
           --out-file="$config_file"
 
-
         if [[ $@ =~ "--print-generated-config-path" ]]; then
           echo "$config_file"
           exit 0
@@ -87,9 +87,13 @@ let
           exit 0
         fi
 
-        ${execution}
+        ${preamble}
+        ${toolDerivation}/bin/${toolName} "''${cfgArgs[@]}" "''${extraArgs[@]}" "$@"
       '';
       destination = "/bin/${toolName}";
+      meta = {
+        mainProgram = toolName;
+      };
     };
 
   blackWithConfig = toolDerivation: generateConfigurationRunner {
@@ -109,18 +113,9 @@ let
 
   ruffWithConfig = toolDerivation: generateConfigurationRunner {
     inherit toolDerivation;
-    # Ruff can only take the config argument for the sub commands
-    # check and format which is kind of annoying.
-    customExecution = ''
-      configArgs=""
-      if [[ ! " $* " =~ [[:blank:]](rule|config|linter|clean|version|help)[[:blank:]] ]]; then
-        configArgs="--config $config_file"
-      fi
-
-      ${toolDerivation}/bin/ruff "$@" $configArgs
-    '';
     key = "";
     config = "ruff.toml";
+    configFlag = "--config";
     files = [
       { path = "pyproject.toml"; key = "tool.ruff"; }
       "ruff.toml"
@@ -169,7 +164,7 @@ let
   isortWithConfig = toolDerivation: generateConfigurationRunner {
     inherit toolDerivation;
     configFlag = "--settings-file";
-    extraArgs = "--src-path . --extend-skip ./build";
+    extraArgs = [ "--src-path" "." "--extend-skip" "./build" ];
     key = "isort";
     config = "isort.ini";
     files = [
@@ -192,7 +187,7 @@ let
     config = "mypy.ini";
     extraArgs =
       if lib.versionAtLeast toolDerivation.version "1.16" then
-        "--exclude-gitignore" else "--exclude '^build'";
+        [ "--exclude-gitignore" ] else [ "--exclude" "'^build'" ];
     files = [
       "mypy.ini"
       ".mypy.ini"
@@ -241,7 +236,7 @@ let
     ++ [
       { path = ./config/pytest.toml; key = "tool.pytest.ini_options"; }
     ];
-    extraArgs = "--rootdir=./";
+    extraArgs = [ "--rootdir=./" "--confcutdir=./" ];
   };
   depsAttr = if lib.versionOlder lib.version "23.05pre-git" then "deps" else "propagatedBuildInputs";
 in
@@ -254,13 +249,19 @@ in
           inherit defaultCheckPhase;
         };
 
+        passthru = {
+          tools = {
+            ruff = ruffWithConfig ruff;
+          };
+        };
+
         "${depsAttr}" = with pythonPkgs; [
           findutils
           (coverageWithConfig coverage)
           (flake8WithConfig flake8)
           (isortWithConfig isort)
-          (mypyWithConfig mypy)
-          (pylintWithConfig pylint)
+          (mypyWithConfig (mypy.overrideAttrs (old: { doCheck = false; })))
+          (pylintWithConfig (pylint.overrideAttrs (old: { doCheck = false; })))
           (pytestWithConfig pytest)
           (ruffWithConfig ruff)
           # pytest is also useful as a module in PYTHONPATH for fixtures and such

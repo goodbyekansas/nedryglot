@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- sphinx-rtd-theme update with new current naming.
+- Checks for pylint and mypy disabled as they are causing errors.
+- Pytest would fail if any directory "between" the root dir and conf dir was unreadable.
+
 ## [5.4.0] - 2026-04-23
 
 ### Changed
