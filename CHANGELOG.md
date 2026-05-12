@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.4.0] - 2026-04-23
 
 ### Changed
+- python: Building API docs now runs with warnings as errors, can be
+  disabled with strictDocsBuild=false.
 - python: checks do no longer delete the `build` folder.
   Instead, each tool ignores this folder (created by pip) as needed.
 - python: `installCheckPhase` is set to `nedryglotPythonInstallCheck`
