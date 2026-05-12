@@ -43,7 +43,7 @@ in
 {
   __functor = self: self."${docsConfig.python.generator}";
 
-  sphinx = attrs@{ name, src, pythonVersion, ... }: {
+  sphinx = attrs@{ name, src, pythonVersion, strictDocsBuild ? true, ... }: {
     api = base.mkDerivation {
       inherit src;
       doCheck = false;
@@ -81,7 +81,7 @@ in
       '';
       buildPhase = ''
         cd doc-source
-        make html
+        make html ${if strictDocsBuild then "SPHINXOPTS=\"-W --keep-going\"" else ""}
       '';
       installPhase = ''
         mkdir -p $out/share/doc/${name}/api
