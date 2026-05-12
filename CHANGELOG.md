@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- python: Building API docs now runs with warnings as errors, can be
+  disabled with strictDocsBuild=false.
+
 ## [5.4.0] - 2026-04-23
 
 ### Changed
