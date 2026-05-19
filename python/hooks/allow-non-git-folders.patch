@@ -1,0 +1,12 @@
+diff --git a/crates/ruff_workspace/src/resolver.rs b/crates/ruff_workspace/src/resolver.rs
+index 1740cc184a..916d357a8d 100644
+--- a/crates/ruff_workspace/src/resolver.rs
++++ b/crates/ruff_workspace/src/resolver.rs
+@@ -490,6 +490,7 @@ pub fn python_files_in_path<'a>(
+     }
+     builder.standard_filters(resolver.respect_gitignore());
+     builder.hidden(false);
++    builder.require_git(false);
+ 
+     builder.threads(
+         std::thread::available_parallelism()
