@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ruff config to be compatible with newer Ruff versions.
 - Use our own ruff wrapper in the pylsp-ruff plugin.
 - Pytest would fail if any directory "between" the root dir and conf dir was unreadable.
+- Ruff now uses .gitignore files even outside a git repo. This
+  is needed since nix flakes leave out the .git folder when copying
+  the source.
 
 ## [5.4.0] - 2026-04-23
 

@@ -263,7 +263,9 @@ in
           (mypyWithConfig mypy)
           (pylintWithConfig pylint)
           (pytestWithConfig pytest)
-          (ruffWithConfig ruff)
+          (ruffWithConfig (ruff.overrideAttrs (a: {
+            patches = a.patches or [ ] ++ [ ./allow-non-git-folders.patch ];
+          })))
           # pytest is also useful as a module in PYTHONPATH for fixtures and such
           pytest
         ]
