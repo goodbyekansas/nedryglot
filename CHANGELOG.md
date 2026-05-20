@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is needed since nix flakes leave out the .git folder when copying
   the source.
 
+### Added
+- A `callPackage` function to the C platforms.
+
 ## [5.4.0] - 2026-04-23
 
 ### Changed
