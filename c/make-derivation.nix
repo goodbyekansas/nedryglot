@@ -17,6 +17,7 @@ platformOverrides:
 }:
 
 attrsOrFn:
+overrides:
 
 let
   doxygenTheme' =
@@ -203,5 +204,5 @@ in
 lib.makeOverridable fn (
   builtins.intersectAttrs
     (builtins.functionArgs attrsFn)
-    (pkgs // splicedComponents // { inherit stdenv; })
+    (pkgs // splicedComponents // { inherit stdenv; } // overrides)
 )

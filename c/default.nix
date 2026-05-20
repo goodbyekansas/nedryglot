@@ -53,7 +53,8 @@ let
           finalPlatform = factory:
             {
               inherit name pkgs;
-              __functor = _self: factory;
+              __functor = _self: (a: factory a { });
+              callPackage = a: overrides: factory a overrides;
               override = overrides:
                 mkPlatform (args // overrides);
               overrideFactory = factoryOverrides:
