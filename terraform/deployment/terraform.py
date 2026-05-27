@@ -56,16 +56,17 @@ def _run_terraform(command: str, args: typing.List[str] = None) -> None:
             raise subprocess.CalledProcessError(process.returncode, " ".join(cmd))
 
 
-def apply(args: argparse.Namespace) -> None:
+def apply(args: argparse.Namespace, extra_args: list[str]) -> None:
     """
     Applies the terraform plan
     """
     _setup_sources(source=args.source)
     _run_terraform(command="init")
-    _run_terraform(command="apply", args=["-auto-approve"])
+    autoapprove = [ "-auto-approve" ] if not sys.stdin.isatty() else []
+    _run_terraform(command="apply", args=autoapprove + extra_args)
 
 
-def plan(args: argparse.Namespace) -> None:
+def plan(args: argparse.Namespace, extra_args: list[str]) -> None:
     """
     Plans the terraform
     """
@@ -73,7 +74,7 @@ def plan(args: argparse.Namespace) -> None:
     _run_terraform(command="init")
     _run_terraform(
         command="plan",
-        args=["-no-color"] + ([f"-out={args.out}"] if args.out else []),
+        args=["-no-color"] + ([f"-out={args.out}"] if args.out else []) + extra_args,
     )
 
 
@@ -100,16 +101,16 @@ def main() -> None:
     )
     sub_plan.set_defaults(func=plan)
 
-    args = parser.parse_args()
+    args, extra_args = parser.parse_known_args()
 
     signal.signal(signal.SIGTERM, _handle_termination)
     signal.signal(signal.SIGINT, _handle_termination)
 
     try:
         if args.subcommand is None:
-            apply(args)
+            apply(args, extra_args)
         else:
-            args.func(args)
+            args.func(args, extra_args)
     except subprocess.CalledProcessError as cpe:
         print(f"Failed to run terraform: {cpe}")
         sys.exit(cpe.returncode)

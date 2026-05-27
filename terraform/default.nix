@@ -1,6 +1,5 @@
 { base, lib, terraform, symlinkJoin }:
 let
-  terraformPkg = terraform;
   mkDeployment = base.callFile ./deployment { };
   mkComponent =
     attrs'@{ name
@@ -13,10 +12,12 @@ let
     , postDeployPhase ? ""
     , deployShellInputs ? [ ]
     , enableTargetSetup ? true
+    , terraformPlugins ? _: [ ]
     , ...
     }:
     let
-      attrs = builtins.removeAttrs attrs' [ "variables" "srcExclude" "shellCommands" ];
+      attrs = builtins.removeAttrs attrs' [ "variables" "srcExclude" "shellCommands" "terraformPlugins" ];
+      terraformPkg = terraform.withPlugins terraformPlugins;
     in
     base.mkComponent rec {
       inherit name;
@@ -96,6 +97,6 @@ in
   '';
 
   mkTerraformComponent = attrs: builtins.trace "Warning: ${attrs.src}: base.languages.terraform.mkTerraformComponent is deprecated. Use base.languages.terraform.mkComponent instead" mkComponent attrs;
-  defaultVersion = terraformPkg;
+  defaultVersion = terraform;
   inherit mkDeployment mkComponent;
 }
