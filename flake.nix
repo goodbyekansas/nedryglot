@@ -3,12 +3,12 @@
 
   inputs = {
     nedryland = {
-      url = "github:goodbyekansas/nedryland/10.0.0";
+      url = "github:goodbyekansas/nedryland/11.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     flake-utils.url = "github:numtide/flake-utils";
-    nixpkgs.url = "nixpkgs/nixos-23.11";
+    nixpkgs.url = "nixpkgs/nixos-25.11";
     nixpkgs_22_11.url = "nixpkgs/nixos-22.11";
   };
 

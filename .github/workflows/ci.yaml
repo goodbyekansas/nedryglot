@@ -1,30 +1,84 @@
 name: Checks
 
 on: [push]
+
 concurrency:
   group: '${{ github.ref_name }}-checks'
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
-    uses: goodbyekansas/nedryland/.github/workflows/checks.yml@10.0.0
-    with:
-      nix-version: 2.19.2
-
-  test:
-    name: Test
+  format:
+    name: Check Format on Nix Expressions 👓 🦖💨
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
-    - name: Setup Nix
-      uses: goodbyekansas/nedryland/.github/actions/setup-nix@10.0.0
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
       with:
-        version: 2.19.2
-        config-path: .github/workflows/nix.conf
+        install_url: https://releases.nixos.org/nix/nix-2.34.7/install
 
-    - name: Check
-      run: nix flake check
+    - name: Check Nix format 👓 🦖💨
+      run: nix run .#nixfmt
+
+  shell-check:
+    name: Lint Shell Scripts 🐢 🐌 💶
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+      with:
+        install_url: https://releases.nixos.org/nix/nix-2.34.7/install
+
+    - name: Check shell scripts 🐢 🐌 💶
+      run: nix run .#shellcheck
+
+  lint:
+    name: Lint Nix Expressions 🦕 📝 👀
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+      with:
+        install_url: https://releases.nixos.org/nix/nix-2.34.7/install
+
+    - name: Lint Nix files 🦕 📝 👀
+      run: nix run .#nixlint
+
+  actionlint:
+    name: Lint Github Actions 🐙 🐱 🎬
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+      with:
+        install_url: https://releases.nixos.org/nix/nix-2.34.7/install
+
+    - name: Lint Github Actions 🐙 🐱 🎬
+      run: nix run .#actionlint
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+      with:
+        install_url: https://releases.nixos.org/nix/nix-2.34.7/install
+
+    - name: Run all tests
+      run: nix flake check --all-systems
