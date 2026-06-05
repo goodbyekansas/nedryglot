@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.5.0] - 2026-06-05
+
 ### Fixed
 - sphinx-rtd-theme update with new current naming.
 - Terraform deployer for new nixpkgs (>=25.11).
