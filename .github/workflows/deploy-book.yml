@@ -12,10 +12,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup Nix
-      uses: goodbyekansas/nedryland/.github/actions/setup-nix@10.0.0
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
       with:
-        config-path: .github/workflows/nix-local.conf
+        install_url: https://releases.nixos.org/nix/nix-2.34.7/install
 
     - name: Build the book
       run: |
