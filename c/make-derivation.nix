@@ -11,6 +11,7 @@ platformOverrides:
 , doxygenOutputDir ? "doc"
 , mathjax
 , enableDoxygen ? true
+, enableDebugger ? true
 , doxygenTheme ? null
 , overrideAttrs ? _: { }
 , overrideAttrsPre ? _pre: _post: { }
@@ -80,6 +81,10 @@ let
   fn = args:
     let
       attrs = attrsFn args;
+      debugger =
+        if enableDebugger && (attrs.debugger or "gdb") != null then
+          buildPackages.${attrs.debugger or "gdb"}
+        else null;
       mkDerivationArgs = {
         inherit stdenv;
         doCheck = true;
@@ -88,7 +93,6 @@ let
       } // attrs // {
         nativeBuildInputs = [
           pkgsBuildBuild.clang-tools
-          buildPackages.valgrind
         ]
         ++ attrs.nativeBuildInputs or [ ]
         ++ lib.optional (attrs.enableDoxygen or enableDoxygen) (
@@ -98,10 +102,12 @@ let
               (doxyfile attrs)
               "${doxygenTheme'}/Doxyfile"
             ]
-        );
+        )
+        ++ lib.optional (debugger != null) buildPackages.valgrind;
 
-        shellInputs = [ buildPackages.${attrs.debugger or "gdb"} ]
-          ++ attrs.shellInputs or [ ];
+        passthru = attrs.passthru or { } // {
+          shellInputs = [ debugger ] ++ attrs.shellInputs or [ ] ++ attrs.passthru.shellInputs or [ ];
+        };
 
         lintPhase = attrs.lintPhase or ''
           sourcePath="."
