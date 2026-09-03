@@ -57,8 +57,8 @@ let
               callPackage = a: overrides: factory a overrides;
               override = overrides:
                 mkPlatform (args // overrides);
-              overrideFactory = factoryOverrides:
-                mkPlatform (args // { inherit factoryOverrides; });
+              overrideFactory = factoryOverrides':
+                mkPlatform (args // { factoryOverrides = factoryOverrides // factoryOverrides'; });
             } // { inherit output; };
         in
         finalPlatform factory;
