@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.5.2] - 2026-10-27
+
 ### Fixed
 - Use the correct clangd when cross-compiling. Also set --query-driver
   so it is allowed to use the cross-compiler to detect headers.
