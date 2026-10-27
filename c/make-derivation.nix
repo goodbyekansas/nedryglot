@@ -92,7 +92,7 @@ let
         outputs = [ "out" ] ++ lib.optionals (attrs.enableDoxygen or enableDoxygen) [ "doc" "man" ];
       } // attrs // {
         nativeBuildInputs = [
-          pkgsBuildBuild.clang-tools
+          buildPackages.clang-tools
         ]
         ++ attrs.nativeBuildInputs or [ ]
         ++ lib.optional (attrs.enableDoxygen or enableDoxygen) (
@@ -108,6 +108,8 @@ let
         passthru = attrs.passthru or { } // {
           shellInputs = [ debugger ] ++ attrs.shellInputs or [ ] ++ attrs.passthru.shellInputs or [ ];
         };
+
+        CLANGD_FLAGS = lib.optional (stdenv.hostPlatform != stdenv.buildPlatform) "--query-driver=/nix/store/*/bin/*";
 
         lintPhase = attrs.lintPhase or ''
           sourcePath="."
